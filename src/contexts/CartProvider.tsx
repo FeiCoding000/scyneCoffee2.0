@@ -42,6 +42,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       await addDoc(ordersCollection, order);
       clearCart();
     } catch (error) {
+      //alert user of error
+      alert("Sorry, only admin can submit order.");
       console.error("Error submitting order: ", error);
     }
   };

@@ -83,24 +83,29 @@ export default function AdminPage() {
                   {coffee.description}
                 </Typography>
 
-                <Stack
-                  direction="column"
-                  spacing={1}
-                  sx={{ mt: 0.5, flexWrap: "wrap" }}
-                >
+                <Stack direction="row" spacing={1} sx={{ mt: 0.5, flexWrap: "wrap" }}>
                   {coffee.category && (
                     <Typography variant="caption" color="primary">
                       {coffee.category}
                     </Typography>
                   )}
-                  <Typography sx={{width:"200px"}}>
-                  {coffee.tags?.map((tag: string, index: number) => (
-                    index>3? null:
-                    <Typography marginRight="4px" border={"1px solid blue"} key={index} variant="caption" color="secondary">
+                  {coffee.tags?.slice(0, 4).map((tag: string, index: number) => (
+                    <Box
+                      key={index}
+                      component="span"
+                      sx={{
+                        mr: 0.5,
+                        border: "1px solid blue",
+                        px: 0.5,
+                        borderRadius: 1,
+                        fontSize: "0.75rem",
+                        color: "secondary.main",
+                        display: "inline-block",
+                      }}
+                    >
                       {tag}
-                    </Typography>
+                    </Box>
                   ))}
-                  </Typography>
                 </Stack>
               </Box>
             </Card>
