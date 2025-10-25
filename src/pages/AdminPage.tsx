@@ -58,9 +58,22 @@ export default function AdminPage() {
       </Stack>
 
       {/* Coffee List */}
-      <Grid container spacing={3}>
+      <Grid
+        container
+        spacing={3}
+        sx={{ display: "grid" }}
+      >
         {fetchedList.map((coffee: Coffee) => (
-          <Grid item xs={12} sm={6} md={4} key={coffee.id}>
+          <Grid
+            key={coffee.id}
+            sx={{
+              gridColumn: {
+                xs: "span 12",
+                sm: "span 6",
+                md: "span 4",
+              },
+            }}
+          >
             <Card sx={{ display: "flex", alignItems: "flex-start", p: 1 }}>
               {coffee.imageUrl && (
                 <Box
@@ -70,7 +83,7 @@ export default function AdminPage() {
                   sx={{
                     width: 60,
                     height: 60,
-                    borderRadius: "50%", 
+                    borderRadius: "50%",
                     objectFit: "cover",
                     mr: 2,
                   }}
@@ -79,33 +92,44 @@ export default function AdminPage() {
               <Box sx={{ flex: 1 }}>
                 <Typography variant="h6">{coffee.name}</Typography>
                 <Divider sx={{ my: 0.5 }} />
-                <Typography  sx={{width:"200px"}} variant="body2" color="text.secondary" noWrap>
+                <Typography
+                  sx={{ width: "200px" }}
+                  variant="body2"
+                  color="text.secondary"
+                  noWrap
+                >
                   {coffee.description}
                 </Typography>
 
-                <Stack direction="row" spacing={1} sx={{ mt: 0.5, flexWrap: "wrap" }}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ mt: 0.5, flexWrap: "wrap" }}
+                >
                   {coffee.category && (
                     <Typography variant="caption" color="primary">
                       {coffee.category}
                     </Typography>
                   )}
-                  {coffee.tags?.slice(0, 4).map((tag: string, index: number) => (
-                    <Box
-                      key={index}
-                      component="span"
-                      sx={{
-                        mr: 0.5,
-                        border: "1px solid blue",
-                        px: 0.5,
-                        borderRadius: 1,
-                        fontSize: "0.75rem",
-                        color: "secondary.main",
-                        display: "inline-block",
-                      }}
-                    >
-                      {tag}
-                    </Box>
-                  ))}
+                  {coffee.tags
+                    ?.slice(0, 4)
+                    .map((tag: string, index: number) => (
+                      <Box
+                        key={index}
+                        component="span"
+                        sx={{
+                          mr: 0.5,
+                          border: "1px solid blue",
+                          px: 0.5,
+                          borderRadius: 1,
+                          fontSize: "0.75rem",
+                          color: "secondary.main",
+                          display: "inline-block",
+                        }}
+                      >
+                        {tag}
+                      </Box>
+                    ))}
                 </Stack>
               </Box>
             </Card>
