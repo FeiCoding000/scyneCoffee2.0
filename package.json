@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://github.com/FeiCoding000/scyneCoffee2.0",
+  "homepage": "https://feicoding000.github.io/scyneCoffee2.0/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
