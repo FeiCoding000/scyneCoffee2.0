@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import Layout from "./components/Layout/Layout";
 import OrderPage from "./pages/OrderPage";
@@ -9,7 +9,7 @@ import './index.css';
 
 function App() {
     return (
-        <Router>
+        <Router basename="/scyneCoffee2.0">
             <Routes>
                 <Route element={<Layout/>}>
                     <Route path="/orders" element={ <OrderPage/>} />
