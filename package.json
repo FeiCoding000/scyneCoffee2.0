@@ -1,7 +1,7 @@
 {
   "name": "coffee-tracker",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "homepage": "https://feicoding000.github.io/scyneCoffee2.0",
   "scripts": {
