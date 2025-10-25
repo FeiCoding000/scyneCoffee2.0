@@ -10,6 +10,7 @@ import './index.css';
 function App() {
     return (
         <Router basename="/scyneCoffee2.0">
+        {/* <Router > */}
             <Routes>
                 <Route element={<Layout/>}>
                     <Route path="/orders" element={ <OrderPage/>} />
