@@ -58,11 +58,7 @@ export default function AdminPage() {
       </Stack>
 
       {/* Coffee List */}
-      <Grid
-        container
-        spacing={3}
-        sx={{ display: "grid" }}
-      >
+      <Grid container spacing={3}>
         {fetchedList.map((coffee: Coffee) => (
           <Grid
             key={coffee.id}
@@ -74,7 +70,15 @@ export default function AdminPage() {
               },
             }}
           >
-            <Card sx={{ display: "flex", alignItems: "flex-start", p: 1 }}>
+            <Card
+              sx={{
+                display: "flex",
+                alignItems: "flex-start",
+                p: 1,
+                height: "100%",
+                width: "100%",
+              }}
+            >
               {coffee.imageUrl && (
                 <Box
                   component="img"
@@ -90,7 +94,7 @@ export default function AdminPage() {
                 />
               )}
               <Box sx={{ flex: 1 }}>
-                <Typography variant="h6">{coffee.name}</Typography>
+                <Typography>{coffee.name}</Typography>
                 <Divider sx={{ my: 0.5 }} />
                 <Typography
                   sx={{ width: "200px" }}
@@ -102,17 +106,21 @@ export default function AdminPage() {
                 </Typography>
 
                 <Stack
-                  direction="row"
+                  direction="column"
                   spacing={1}
-                  sx={{ mt: 0.5, flexWrap: "wrap" }}
+                  sx={{ mt: 0.5, flexWrap: "wrap", display: "flex", gap: 1 }}
                 >
-                  {coffee.category && (
-                    <Typography variant="caption" color="primary">
-                      {coffee.category}
-                    </Typography>
-                  )}
-                  {coffee.tags
-                    ?.slice(0, 4)
+                  <div>
+                    {coffee.category && (
+                      <Typography variant="caption" color="primary">
+                        {coffee.category}
+                      </Typography>
+                    )}
+                  </div>
+
+                  <div>
+                    {coffee.tags
+                    ?.slice(0, 3)
                     .map((tag: string, index: number) => (
                       <Box
                         key={index}
@@ -130,6 +138,8 @@ export default function AdminPage() {
                         {tag}
                       </Box>
                     ))}
+                  </div>
+                  
                 </Stack>
               </Box>
             </Card>

@@ -73,15 +73,7 @@ export default function MenuPage() {
       )}
     <div>
       
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
-        gap: "16px",
-        width: "100%",
-        margin: "0 auto",
-        justifyItems: "stretch",
-        justifyContent: "center"
-      }}>
+      <div className="menu-grid">
         {menuItems.map((item) => (
         <MenuItemCard
           key={item.id}
