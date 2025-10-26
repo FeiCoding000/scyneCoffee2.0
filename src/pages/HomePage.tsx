@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Layout/Footer';
+import { Button } from '@mui/material';
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -17,15 +18,17 @@ export default function HomePage() {
 
   return (
     <div>
-      <h1>Welcome, {user.displayName} start your order now!</h1>
-      <button onClick={() => navigate('/menu')}>Start</button>
+      <div style={{ minHeight: "90vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+        <h1 style={{marginBottom:"20px"}}>Welcome, {user.displayName} start your order now!</h1>
+        <Button variant='contained' onClick={() => navigate('/menu')}>Start</Button>
+      </div>
+      
       <footer
         style={{
-          marginLeft: "10%",
+          position:"fixed",
+          bottom:"0",
           height:"50px",
-          width:"90%",
-          border:"1px solid blue",
-          marginBottom:"5px"
+          width:"100%"
         }}
       >
         <Footer />

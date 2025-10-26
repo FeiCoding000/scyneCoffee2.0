@@ -52,8 +52,15 @@ export default function NavBar() {
           sx={{
             backgroundColor: "#7069d5ff",
             color: "white",
+            borderColor: "white",
+            marginTop: "5px",
+            height: "25px",
+            "&:hover": {
+              backgroundColor: "#01051bff",
+              color: "white",
+            },
           }}
-          variant="contained"
+          variant="outlined"
           size="small"
           color="primary"
           onClick={handleLogout}

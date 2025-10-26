@@ -56,14 +56,14 @@ export default function MenuItemCard(props: {
       <div>
         <h2 style={{ fontFamily: "monospace", marginBottom: "4px" }}>{name}</h2>
         <p>{"★".repeat(starNumber) + "☆".repeat(5 - starNumber)}</p>
-        <p style={{ textAlign: "justify", marginBottom: "5px" }}>
+        <p style={{ textAlign: "justify", marginBottom: "5px", fontSize: "13px" }}>
           {description}
         </p>
       </div>
-      <div style={{ marginTop: "auto" }}>
+      <div style={{ marginTop: "auto", fontSize: "12px" }}>
         {tags &&
           tags.length > 0 &&
-          tags.slice(0, 3).map((tag, index) => (
+          tags.slice(0, 2).map((tag, index) => (
             <span
               key={index}
               style={{

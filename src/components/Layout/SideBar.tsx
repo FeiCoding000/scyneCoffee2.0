@@ -32,28 +32,16 @@ export default function SideBar() {
       }}
     >
       <Menu>
-        <MenuItem rootStyles={menuItemStyles.root} icon={<MenuBookIcon />}>
-          <Link to="/menu" style={{ textDecoration: "none", color: "inherit" }}>
-            Menu
-          </Link>
+        <MenuItem rootStyles={menuItemStyles.root} icon={<MenuBookIcon />} component={<Link to = "/menu"/>}>
+          Menu
         </MenuItem>
 
-        <MenuItem rootStyles={menuItemStyles.root} icon={<BarChartIcon />}>
-          <Link
-            to="/admin"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            Admin
-          </Link>
+        <MenuItem rootStyles={menuItemStyles.root} icon={<BarChartIcon />} component={<Link to = "/admin"/>}>
+        Admin
         </MenuItem>
 
-        <MenuItem rootStyles={menuItemStyles.root} icon={<ForumIcon />}>
-          <Link
-            to="/orders"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            Orders
-          </Link>
+        <MenuItem rootStyles={menuItemStyles.root} icon={<ForumIcon />} component={ <Link to = "/orders" />}>
+        Orders
         </MenuItem>
       </Menu>
     </Box>
