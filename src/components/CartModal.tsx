@@ -48,10 +48,9 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
       <Box
         sx={{
           position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: { xs: "90%", sm: 400, md: 500 },
+          top: "40px",
+          right: "2px",
+          width: "300px",
           bgcolor: "burlywood",
           borderRadius: 2,
           p: 3,
@@ -61,7 +60,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
         }}
       >
         <Typography variant="h6" gutterBottom>
-          🛒 Total items: {cartItems.length}
+        Total items: {cartItems.length}
         </Typography>
 
         {/* Customer Name */}
@@ -109,7 +108,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
         )}
 
         {/* Buttons */}
-        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+        <Stack direction="column" spacing={2} sx={{ mt: 2 }}>
           <Button variant="contained" color="primary" onClick={handlePlaceOrder} fullWidth>
             Place Order
           </Button>

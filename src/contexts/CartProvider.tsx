@@ -14,6 +14,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   //add item to cart
   const addToCart = (newItem: OrderItem) => {
     setCartItems((prevItems) => [...prevItems, newItem]);
+    setIsCartOpen(true);
   };
 
   //remove item from cart by index
