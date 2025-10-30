@@ -24,6 +24,7 @@ export default function NavBar() {
         justifyContent: "space-between",
         zIndex: "1000",
         padding: "10px",
+        width:"100%"
       }}
     >
       <Box sx={{ textAlign: "center" }}>

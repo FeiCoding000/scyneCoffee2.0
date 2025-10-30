@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "../contexts/CartContext";
 import type { Order } from "../types/order";
 import {
@@ -30,12 +30,28 @@ export default function CartModal({
   const [customerName, setCustomerName] = useState("");
   const [warning, setWarning] = useState("");
   const [submitWarning, setSubmitWarning] = useState("");
+  const [rightOffset, setRightOffset] = useState(0);
 
   const order: Order = {
     items: cartItems,
     customerName: customerName,
     isCompleted: false,
   };
+
+  const updateOffset = () => {
+    const vw = window.innerWidth;
+    if(vw <= 1600) {
+      setRightOffset(0);
+    } else {
+      setRightOffset((vw-1600)/2);
+    }
+  };
+
+  useEffect(() => {
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+    return () => window.removeEventListener("resize", updateOffset);
+  }, []);
 
   const handlePlaceOrder = () => {
     if (customerName.trim() === "") {
@@ -53,14 +69,14 @@ export default function CartModal({
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={isOpen} onClose={onClose} >
       <Box
         sx={{
-          position: "fixed",
-          top: "40px",
-          right: "2px",
+          position: 'absolute',
+          top: 40,
+          right: rightOffset,
           width: "300px",
-          bgcolor: "burlywood",
+          bgcolor: "white",
           borderRadius: 2,
           p: 3,
           boxShadow: 24,
@@ -68,7 +84,7 @@ export default function CartModal({
           overflowY: "auto",
         }}
       >
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6"  sx={{color: "black"}}>
           Total items: {cartItems.length}
         </Typography>
 
@@ -93,8 +109,8 @@ export default function CartModal({
         {/* Cart Items List */}
         <List
           sx={{
+            color:"black",
             bgcolor: "background.paper",
-            border: "1px solid gray",
             borderRadius: 1,
             mt: 2,
           }}
