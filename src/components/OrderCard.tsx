@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Order } from "../types/order";
 import { db } from "../services/firebase";
-import { updateDoc, doc } from "firebase/firestore";
+import { updateDoc, doc, writeBatch, increment } from "firebase/firestore";
 import {
   Card,
   CardContent,
@@ -26,6 +26,16 @@ export default function OrderCard({ order }: { order: Order }) {
       const orderRef = doc(db, "orders", orderId);
       await updateDoc(orderRef, { isCompleted: true });
       setDone(true);
+
+      //batch update popularity
+      const batch = writeBatch(db);
+      order.items.forEach((item) => {
+      if (!item.coffeeId) return;
+      const coffeeRef = doc(db, "coffee", item.coffeeId);
+      batch.update(coffeeRef, { popularity: increment(item.quantity) });
+    });
+    await batch.commit();
+
     } catch (error) {
       console.error("Error updating order:", error);
     } finally {

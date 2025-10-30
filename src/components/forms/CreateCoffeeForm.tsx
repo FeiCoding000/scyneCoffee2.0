@@ -51,7 +51,7 @@ export default function CreateCoffeeForm({ onSuccess }: Props) {
         updatedAt: new Date(),
       });
       reset();
-      onSuccess?.(); // 成功后回调
+      onSuccess?.(); 
     } catch (err) {
       console.error("Error adding coffee:", err);
     }

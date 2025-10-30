@@ -7,6 +7,7 @@ import MenuItemCard from "../components/MenuItemCard";
 import CoffeeModal from "../components/forms/CoffeeModal";
 import CartModal from "../components/CartModal";
 import { useCart } from "../contexts/CartContext";
+import OrderConfirmedModal from "../components/OrderConfirmedModal";
 
 export default function MenuPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,6 +15,7 @@ export default function MenuPage() {
   const [selectedItem, setSelectedItem] = useState<Coffee>();
   const { isCartOpen, toggleCart } = useCart();
   const [maxPupularity, setMaxPopularity] = useState(0);
+  const [isOrderConfirmed, setIsOrderCnfirmed] = useState(false);
 
   const fetchMenuItems = async () => {
     try {
@@ -60,7 +62,8 @@ export default function MenuPage() {
 
   return (
     <div>
-    {isCartOpen && <CartModal isOpen={isCartOpen} onClose={toggleCart}/>}
+    <OrderConfirmedModal open={isOrderConfirmed} onClose={() => setIsOrderCnfirmed(false)}></OrderConfirmedModal>
+    {isCartOpen && <CartModal isOpen={isCartOpen} onClose={toggleCart} handleConfirmedModal={() => {setIsOrderCnfirmed(true)}}/>}
       {isModalOpen && (
         <CoffeeModal
           coffee={selectedItem || null}

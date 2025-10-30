@@ -17,7 +17,15 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export default function CartModal({
+  isOpen,
+  onClose,
+  handleConfirmedModal,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  handleConfirmedModal: ()=> void;
+}) {
   const { cartItems, removeFromCart, clearCart, submitOrder } = useCart();
   const [customerName, setCustomerName] = useState("");
   const [warning, setWarning] = useState("");
@@ -41,6 +49,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
     submitOrder(order);
     setCustomerName("");
     onClose();
+    handleConfirmedModal();
   };
 
   return (
@@ -60,7 +69,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
         }}
       >
         <Typography variant="h6" gutterBottom>
-        Total items: {cartItems.length}
+          Total items: {cartItems.length}
         </Typography>
 
         {/* Customer Name */}
@@ -82,22 +91,37 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
         />
 
         {/* Cart Items List */}
-        <List sx={{ bgcolor: "background.paper", border: "1px solid gray", borderRadius: 1, mt: 2 }}>
+        <List
+          sx={{
+            bgcolor: "background.paper",
+            border: "1px solid gray",
+            borderRadius: 1,
+            mt: 2,
+          }}
+        >
           {cartItems.map((item, index) => (
             <div key={index}>
               <ListItem
                 secondaryAction={
-                  <IconButton edge="end" aria-label="delete" onClick={() => removeFromCart(index)}>
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => removeFromCart(index)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 }
               >
-                <ListItemText primary={`${item.title} - Qty: ${item.quantity}`} />
+                <ListItemText
+                  primary={`${item.title} - Qty: ${item.quantity}`}
+                />
               </ListItem>
               <Divider />
             </div>
           ))}
-          {cartItems.length === 0 && <Typography sx={{ p: 2 }}>Your cart is empty.</Typography>}
+          {cartItems.length === 0 && (
+            <Typography sx={{ p: 2 }}>Your cart is empty.</Typography>
+          )}
         </List>
 
         {/* Warning / Submit Errors */}
@@ -109,10 +133,30 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
 
         {/* Buttons */}
         <Stack direction="column" spacing={2} sx={{ mt: 2 }}>
-          <Button variant="contained" color="primary" onClick={handlePlaceOrder} fullWidth>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handlePlaceOrder}
+            fullWidth
+          >
             Place Order
           </Button>
-          <Button variant="outlined" color="secondary" onClick={clearCart} fullWidth>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onClose}
+            fullWidth
+          >
+            Add Another
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={clearCart}
+            fullWidth
+          >
             Clear Cart
           </Button>
         </Stack>
