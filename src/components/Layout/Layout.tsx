@@ -4,45 +4,67 @@ import { Outlet } from "react-router-dom";
 
 export default function Layout() {
   return (
-    <div className="app-layout" style={{ 
-      display: "flex", 
-      flexDirection: "column", 
-      padding: "0", 
-      margin: "0",
-      minHeight: "100vh",
-      backgroundColor: "#464e7e",
-      color: "white",
-      width: "100%",
-    }}>
-      <nav style={{ 
-        position: "fixed", 
-        top: "0px", 
-        width: "100%", 
-        zIndex: 1000, 
-        backgroundColor: "inherit" 
-      }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        width: "100%",
+        backgroundColor: "#464e7e",
+        color: "white",
+        alignItems: "center",      // 水平居中
+        justifyContent: "flex-start", // 从顶部开始，可根据需要改成 center
+        padding: "0",
+        margin: "0",
+      }}
+    >
+      {/* NavBar 固定在顶部 */}
+      <nav
+        style={{
+          position: "fixed",
+          top: 0,
+          width: "100%",
+          zIndex: 1000,
+          backgroundColor: "#464e7e",
+        }}
+      >
         <NavBar />
       </nav>
 
-      <div className="app-main-content" style={{
-        marginTop: "50px",    
-        display: "flex",
-        flexDirection: "row",
-        flex: 1             
-      }}>
-        <aside style={{
-          position: "fixed", 
-          top: "50px",      
-          left: "0",        
-          width: "auto",
-        }}>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          marginTop: "60px",       
+          width: "100%",
+          maxWidth: "1600px",      
+          padding: "0 16px",
+        }}
+      >
+        {/* Sidebar */}
+        <aside
+          style={{
+            minWidth: "200px",
+            marginRight: "20px",
+            position: "sticky",
+            top: "60px", 
+            alignSelf: "flex-start", 
+          }}
+        >
           <SideBar />
         </aside>
-        <main style={{ 
-          marginLeft: "100px", 
-          width: "100%", 
-          padding: "0 5%" 
-        }}>
+
+        {/* Main 内容 */}
+        <main
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",     
+            justifyContent: "flex-start",
+          }}
+        >
           <Outlet />
         </main>
       </div>
