@@ -1,5 +1,5 @@
 import { db } from "../services/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy } from "firebase/firestore";
 import { useEffect } from "react";
 import { useState } from "react";
 import type { Coffee } from "../types/coffee";

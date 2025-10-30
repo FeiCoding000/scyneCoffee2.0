@@ -14,7 +14,7 @@ export default function Cart() {
   });
   const { cartItems, toggleCart } = useCart();
   return (
-    <div onClick={toggleCart} style={{ cursor: "pointer" }}>
+    <div  className= "carIcon" onClick={toggleCart} style={{ cursor: "pointer" }}>
       <IconButton>
         <CartBadge badgeContent={cartItems.length} color="primary" overlap="circular" />
         <ShoppingCartIcon fontSize="small" sx={{color:"white"}} />

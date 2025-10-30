@@ -11,12 +11,12 @@ export default function Layout() {
         color: "white",
       }}
     >
-      {/* Navbar 背景全屏，内容居中 */}
-      <nav
+      <nav 
         style={{
           position: "fixed",
           top: 0,
           width: "100%",
+          height:"40px",
           zIndex: 1000,
           backgroundColor: "#464e7e",
           display: "flex",
@@ -25,7 +25,7 @@ export default function Layout() {
       >
         <div
           style={{
-            maxWidth: "1600px",  // 内容最大宽度
+            maxWidth: "1600px",  
             width: "100%",
             margin: "0 auto",
             display: "flex",
@@ -37,7 +37,6 @@ export default function Layout() {
         </div>
       </nav>
 
-      {/* 页面主体 */}
       <div
         style={{
           maxWidth: "1600px",
@@ -45,22 +44,23 @@ export default function Layout() {
           margin: "0 auto",
           display: "flex",
           flexDirection: "row",
-          marginTop: "60px", // 给 Navbar 留空间
+          marginTop: "60px", 
           padding: "0 16px",
+          position: "relative"
         }}
       >
-        <aside
+        <aside className="layout-aside"
           style={{
-            minWidth: "200px",
-            marginRight: "20px",
-            position: "sticky",
-            top: "60px",
+            position: "fixed",
+            top: "40px",
+            height:"100%",
+            marginLeft:"-20px"
           }}
         >
           <SideBar />
         </aside>
 
-        <main style={{ flex: 1 }}>
+        <main style={{ flex: 1, marginLeft:"160px" }}>
           <Outlet />
         </main>
       </div>

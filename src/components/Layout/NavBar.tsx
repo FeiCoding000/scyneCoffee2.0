@@ -17,13 +17,12 @@ export default function NavBar() {
   const disPlayName = user?.displayName ? user.displayName : user?.email;
 
   return user ? (
-    <div
+    <div className="navBar-left" 
       style={{
-        height: "30px",
+        height: "40px",
         display: "flex",
         justifyContent: "space-between",
         zIndex: "1000",
-        padding: "10px",
         width:"100%"
       }}
     >
@@ -31,11 +30,11 @@ export default function NavBar() {
         <img
           src="https://cdn.prod.website-files.com/650aedb6397a7021a593e810/672ac5664163926064db6bd7_scyne-logo.svg"
           alt="Scyne Logo"
-          style={{ height: "30px", width: "auto", paddingLeft: "10px" }}
+          style={{ height: "30px", width: "auto", paddingLeft: "10px", marginTop:"5px" }}
         />
       </Box>
 
-      <div
+      <div className="navBar-right"
         style={{
           color: "white",
           display: "flex",
@@ -45,7 +44,7 @@ export default function NavBar() {
           paddingRight: "10px",
         }}
       >
-        <span style={{ display: "inline-block" }}>
+        <span>
           Welcome, {disPlayName?.toUpperCase()}
         </span>
         <Cart />
