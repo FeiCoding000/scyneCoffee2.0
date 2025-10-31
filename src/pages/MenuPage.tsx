@@ -8,6 +8,7 @@ import CoffeeModal from "../components/forms/CoffeeModal";
 import CartModal from "../components/CartModal";
 import { useCart } from "../contexts/CartContext";
 import OrderConfirmedModal from "../components/OrderConfirmedModal";
+import MenuSearchbar from "../components/MenuSearchbar";
 
 export default function MenuPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +17,27 @@ export default function MenuPage() {
   const { isCartOpen, toggleCart } = useCart();
   const [maxPupularity, setMaxPopularity] = useState(0);
   const [isOrderConfirmed, setIsOrderCnfirmed] = useState(false);
+  const [filteredItems, setFilteredItems] = useState<Coffee[]>([]);
+
+  const onSearch = (term: string) => {
+      term= term.trim();
+      if(!term){
+        return;
+      } 
+      const lower = term.toLowerCase();
+      const result = menuItems.filter(
+        item => item.name.toLowerCase().includes(lower) || 
+                item.description.toLowerCase().includes(lower) ||
+                item.category.toLowerCase().includes(lower) ||
+                item.tags?.forEach(
+                  (tag) => {
+                    tag.includes(lower)
+                  }
+                )
+      )
+      setFilteredItems(result);
+  }
+
 
   const fetchMenuItems = async () => {
     try {
@@ -34,11 +56,10 @@ export default function MenuPage() {
           popularity: data.popularity,
           hotOnly: data.hotOnly,
           defaultMilk: data.defaultMilk,
-          createdAt: data.createdAt?.toDate?.(),
-          updatedAt: data.updatedAt?.toDate?.(),
         };
       });
       setMenuItems(menuList);
+      setFilteredItems(menuList);
       //get max popularity
       const maxPop = menuList.reduce(
         (max, item) => (item.popularity > max ? item.popularity : max),
@@ -71,13 +92,12 @@ export default function MenuPage() {
           onClose={() => {
             setIsModalOpen(false);
           }}
-          // onAddToCart={() => {}}
         />
       )}
     <div>
-      
+      <div><MenuSearchbar onSearch={onSearch} ></MenuSearchbar></div>
       <div className="menu-grid">
-        {menuItems.map((item) => (
+        {filteredItems.map((item) => (
         <MenuItemCard
           key={item.id}
           coffee={item}
