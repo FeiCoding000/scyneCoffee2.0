@@ -29,8 +29,8 @@ export const OrderSchema = z.object({
     customerName: z.string(),
     items: z.array(orderItemSchema),
     isCompleted: z.boolean().default(false),
-    createdAt: z.date().optional(),
-    updatedAt: z.date().optional()
+    createdAt: z.date(),
+    updatedAt: z.date()
 });
 
 export type OrderItem = z.infer<typeof orderItemSchema>;

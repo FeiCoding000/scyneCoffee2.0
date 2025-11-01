@@ -93,10 +93,11 @@ export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProp
               <Select defaultValue={defaultMilk} {...register("milk", { required: true })}>
                 <MuiMenuItem value="full cream">Full Cream</MuiMenuItem>
                 <MuiMenuItem value="lite">Lite</MuiMenuItem>
+                <MuiMenuItem value="skim">Skim</MuiMenuItem>
+                <MuiMenuItem value="lactose free">Lactose free</MuiMenuItem>
                 <MuiMenuItem value="almond">Almond</MuiMenuItem>
                 <MuiMenuItem value="soy">Soy</MuiMenuItem>
                 <MuiMenuItem value="oat">Oat</MuiMenuItem>
-                <MuiMenuItem value="skim">Skim</MuiMenuItem>
                 <MuiMenuItem value="none">None</MuiMenuItem>
               </Select>
             </FormControl>

@@ -36,6 +36,8 @@ export default function CartModal({
     items: cartItems,
     customerName: customerName,
     isCompleted: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
   };
 
   const updateOffset = () => {

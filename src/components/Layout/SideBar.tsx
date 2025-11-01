@@ -43,6 +43,10 @@ export default function SideBar() {
         <MenuItem rootStyles={menuItemStyles.root} icon={<ForumIcon />} component={ <Link to = "/orders" />}>
         Orders
         </MenuItem>
+
+        <MenuItem rootStyles={menuItemStyles.root} icon={<ForumIcon />} component={ <Link to = "/statistic" />}>
+        Statistic
+        </MenuItem>
       </Menu>
     </Box>
   );
