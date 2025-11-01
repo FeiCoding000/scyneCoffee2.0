@@ -96,9 +96,10 @@ export default function CreateCoffeeForm({ onSuccess }: Props) {
           <MenuItem value="">No Milk</MenuItem>
           <MenuItem value="full cream">Full Cream</MenuItem>
           <MenuItem value="lite">Lite</MenuItem>
+          <MenuItem value="lactose free">Lactose Free</MenuItem>
+          <MenuItem value="skim">Skim</MenuItem>
           <MenuItem value="almond">Almond</MenuItem>
           <MenuItem value="oat">Oat</MenuItem>
-          <MenuItem value="lactose free">Lactose Free</MenuItem>
           <MenuItem value="soy">Soy</MenuItem>
         </Select>
       </FormControl>
