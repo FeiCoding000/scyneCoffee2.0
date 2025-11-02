@@ -95,5 +95,8 @@ ul, ol {
   .layout-aside {
     width: 80px;
   }
+  .home-container h1 {
+    font-size: 20px;
+  }
 
 }

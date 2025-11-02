@@ -17,9 +17,9 @@ export default function HomePage() {
   if (!user) return null; 
 
   return (
-    <div>
+    <div className='home-container'>
       <div style={{ minHeight: "90vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-        <h1 style={{marginBottom:"20px"}}>Welcome, {user.displayName} start your order now!</h1>
+        <h1 style={{marginBottom:"20px", color:"white", padding:"10px"}}>Welcome, {user.displayName} start your order now!</h1>
         <Button variant='contained' onClick={() => navigate('/menu')}>Start</Button>
       </div>
       
