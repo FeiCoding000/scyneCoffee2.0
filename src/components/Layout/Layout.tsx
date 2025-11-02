@@ -60,7 +60,7 @@ export default function Layout() {
           <SideBar />
         </aside>
 
-        <main style={{ flex: 1, marginLeft:"160px" }}>
+        <main style={{ flex: 1, marginLeft:"160px", marginTop:"10px" }}>
           <Outlet />
         </main>
       </div>

@@ -24,10 +24,20 @@ type CoffeeModalProps = {
   onClose: () => void;
 };
 
-export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProps) {
-  const { register, handleSubmit, reset } = useForm<OrderItem>();
+export default function CoffeeModal({
+  coffee,
+  isOpen,
+  onClose,
+}: CoffeeModalProps) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<OrderItem>();
   const { addToCart } = useCart();
   const [isIced, setIsIced] = useState(false);
+  const [isXhot, setIsXhot] = useState(false);
   const defaultMilk = coffee?.defaultMilk || "none";
 
   const onSubmit = (data: OrderItem) => {
@@ -35,6 +45,7 @@ export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProp
       coffeeId: coffee?.id,
       title: coffee?.name || "",
       isIced: data.isIced || false,
+      isDecaf: data.isDecaf || false,
       strength: data.strength || 0,
       quantity: data.quantity || 1,
       milk: data.milk || "none",
@@ -43,7 +54,9 @@ export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProp
       sugar: data.sugar || 0,
       sweetner: data.sweetner || 0,
       extraWater:
-        coffee?.category?.includes("tea") || coffee?.name === "long black" ? 500 : 0,
+        coffee?.category?.includes("tea") || coffee?.name === "long black"
+          ? 500
+          : 0,
       isHot: data.isIced ? false : true,
       isCompleted: false,
     };
@@ -83,14 +96,30 @@ export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProp
               label="Quantity"
               type="number"
               defaultValue={1}
-              {...register("quantity", { required: true, valueAsNumber: true })}
-              fullWidth
+              {...register("quantity", {
+                required: "Quantity is required",
+                valueAsNumber: true,
+                min: { value: 1, message: "Minimum 1" },
+                max: { value: 10, message: "Maximum 10" },
+                validate: (value) =>
+                  Number.isInteger(value) || "Must be an integer",
+              })}
+              error={!!errors.quantity}
+              helperText={errors.quantity?.message}
+              onKeyDown={(e) => {
+                if (["e", "E", "+", "-", "."].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
             />
 
             {/* Milk */}
             <FormControl fullWidth>
               <InputLabel>Milk</InputLabel>
-              <Select defaultValue={defaultMilk} {...register("milk", { required: true })}>
+              <Select
+                defaultValue={defaultMilk}
+                {...register("milk", { required: true })}
+              >
                 <MuiMenuItem value="full cream">Full Cream</MuiMenuItem>
                 <MuiMenuItem value="lite">Lite</MuiMenuItem>
                 <MuiMenuItem value="skim">Skim</MuiMenuItem>
@@ -106,7 +135,10 @@ export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProp
             {coffee?.category === "tea" ? (
               <FormControl fullWidth>
                 <InputLabel>Tea Bags</InputLabel>
-                <Select defaultValue={1} {...register("teaBags", { required: true })}>
+                <Select
+                  defaultValue={1}
+                  {...register("teaBags", { required: true })}
+                >
                   <MuiMenuItem value={1}>1</MuiMenuItem>
                   <MuiMenuItem value={2}>2</MuiMenuItem>
                   <MuiMenuItem value={3}>3</MuiMenuItem>
@@ -115,7 +147,10 @@ export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProp
             ) : (
               <FormControl fullWidth>
                 <InputLabel>Strength</InputLabel>
-                <Select defaultValue={1} {...register("strength", { valueAsNumber: true })}>
+                <Select
+                  defaultValue={1}
+                  {...register("strength", { valueAsNumber: true })}
+                >
                   <MuiMenuItem value={0.5}>Weak</MuiMenuItem>
                   <MuiMenuItem value={1}>Regular</MuiMenuItem>
                   <MuiMenuItem value={2}>Strong</MuiMenuItem>
@@ -130,7 +165,12 @@ export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProp
                 control={
                   <Checkbox
                     {...register("isIced")}
-                    onChange={(e) => setIsIced(e.target.checked)}
+                    checked={isIced}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setIsIced(checked);
+                      if (checked) setIsXhot(false);
+                    }}
                   />
                 }
                 label="Iced Version"
@@ -140,8 +180,25 @@ export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProp
             {/* Extra Hot */}
             {(coffee?.tags?.includes("hot") || coffee?.hotOnly) && (
               <FormControlLabel
-                control={<Checkbox {...register("isXHot")} />}
+                control={
+                  <Checkbox
+                    {...register("isXHot")}
+                    checked={isXhot}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setIsXhot(checked);
+                      if (checked) setIsIced(false);
+                    }}
+                  />
+                }
                 label="Extra Hot"
+              />
+            )}
+
+            {coffee && (
+              <FormControlLabel
+                control={<Checkbox {...register("isDecaf")} />}
+                label="Decaf"
               />
             )}
 
@@ -150,8 +207,15 @@ export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProp
               label="Sugar"
               type="number"
               defaultValue={0}
-              {...register("sugar", { valueAsNumber: true })}
-              fullWidth
+              {...register("sugar", {
+                valueAsNumber: true,
+                min: { value: 0, message: "Cannot be negative" },
+                max: { value: 10, message: "Maximum is 10" },
+                validate: (value) =>
+                  Number.isInteger(value) || "Must be an integer",
+              })}
+              error={!!errors.sugar}
+              helperText={errors.sugar?.message}
             />
 
             {/* Sweetener */}
@@ -159,8 +223,15 @@ export default function CoffeeModal({ coffee, isOpen, onClose }: CoffeeModalProp
               label="Sweetener"
               type="number"
               defaultValue={0}
-              {...register("sweetner", { valueAsNumber: true })}
-              fullWidth
+              {...register("sweetner", {
+                valueAsNumber: true,
+                min: { value: 0, message: "Cannot be negative" },
+                max: { value: 10, message: "Maximum is 10" },
+                validate: (value) =>
+                  Number.isInteger(value) || "Must be an integer",
+              })}
+              error={!!errors.sweetner}
+              helperText={errors.sweetner?.message}
             />
 
             {/* Buttons */}

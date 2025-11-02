@@ -10,6 +10,7 @@ export const CoffeeSchema = z.object({
     hotOnly: z.boolean().default(true),
     imageUrl: z.string().url().optional(),
     isAvailable: z.boolean().default(true),
+    // isDecaf: z.boolean().default(false),
     // isIced: z.boolean().default(false),
     // isXHot: z.boolean().default(false),
     // isIced: z.boolean().default(false),
