@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import AdminPage from "./pages/AdminPage";
 import MenuPage from "./pages/MenuPage";
 import StatisticPage from "./pages/StatisticPage";
+import BugReportPage from "./pages/BugReportPage";
 import './index.css';
 
 function App() {
@@ -18,6 +19,8 @@ function App() {
                     <Route path="/admin" element={ <AdminPage/>} />
                     <Route path="/menu" element={ <MenuPage/>} />
                     <Route path="/statistic" element={ <StatisticPage/>} />
+                    <Route path="/bugreport" element={ <BugReportPage/>} />
+
                 </Route>
 
                 <Route path="/" element={<HomePage/>} />

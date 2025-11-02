@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { Menu, MenuItem } from "react-pro-sidebar";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import ForumIcon from "@mui/icons-material/Forum";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import BugReportIcon from '@mui/icons-material/BugReport';
 
 export default function SideBar() {
   const menuItemStyles = {
@@ -29,6 +31,7 @@ export default function SideBar() {
         display: "flex",
         flexDirection: "column",
         paddingLeft: "10px",
+        marginTop:"30px",
       }}
     >
       <Menu>
@@ -36,16 +39,20 @@ export default function SideBar() {
           Menu
         </MenuItem>
 
-        <MenuItem rootStyles={menuItemStyles.root} icon={<BarChartIcon />} component={<Link to = "/admin"/>}>
+        <MenuItem rootStyles={menuItemStyles.root} icon={<AdminPanelSettingsIcon />} component={<Link to = "/admin"/>}>
         Admin
         </MenuItem>
 
-        <MenuItem rootStyles={menuItemStyles.root} icon={<ForumIcon />} component={ <Link to = "/orders" />}>
+        <MenuItem rootStyles={menuItemStyles.root} icon={<ReceiptLongIcon />} component={ <Link to = "/orders" />}>
         Orders
         </MenuItem>
 
-        <MenuItem rootStyles={menuItemStyles.root} icon={<ForumIcon />} component={ <Link to = "/statistic" />}>
+        <MenuItem rootStyles={menuItemStyles.root} icon={<BarChartIcon />} component={ <Link to = "/statistic" />}>
         Statistic
+        </MenuItem>
+
+        <MenuItem rootStyles={menuItemStyles.root} icon={<BugReportIcon />} component={ <Link to = "/bugreport" />}>
+        Report
         </MenuItem>
       </Menu>
     </Box>
