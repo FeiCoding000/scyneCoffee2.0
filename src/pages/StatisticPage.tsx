@@ -1,10 +1,11 @@
 import { useEffect,  useState } from "react";
 import { db } from "../services/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import type { Order } from "../types/order";
 import DailyDataLineChart from "../components/dataComponents/DailyDataLineChart";
 import MilkPieChart from "../components/dataComponents/MilkPieChart";
 import { Box } from "@mui/material";
+import type { Coffee } from "../types/coffee";
 
 export default function StatisticPage() {
   const [milkData, setMilkData] = useState<
@@ -16,6 +17,7 @@ export default function StatisticPage() {
   >({});
   const [totalNumber, setTotalNumber] = useState(0);
   const [orders, setOrders] = useState<Order[]>();
+  const [mostPopular, setMostPopular] = useState<string>("Not available");
 
   //total coffees ordered
   const calculateTotalNumber = (orders: Order[]) => {
@@ -112,6 +114,25 @@ export default function StatisticPage() {
     fetchedOrderInfo();
   }, []);
 
+  //fetch most popular coffee
+  useEffect(
+    () => {
+      const fetchMostPPLcoffee = async () => {
+        const coffeeRef = collection(db, "coffee");
+        const q = query(coffeeRef, orderBy("popularity", "desc"),limit(1))
+        const querySnapshot = await getDocs(q);
+        if(!querySnapshot.empty){
+          const doc = querySnapshot.docs[0];
+          const data = { id: doc.id, ...doc.data()} as Coffee;
+          console.log("data",data)
+          setMostPopular(data.name)
+        }
+      }
+
+      fetchMostPPLcoffee();
+    },[]
+  )
+
   //get data for line chart
   const sortedArray = Object.entries(dailyCoffeeNumber)
     .map(([date, value]) => ({ date, value }))
@@ -131,9 +152,8 @@ export default function StatisticPage() {
     <Box
       className="container"
       style={{
-        width: "100%",
+        width: "98%",
         height: "80vh",
-        border: "1px solid white",
         display: "flex",
         flexDirection: "column",
         gap: "20px",
@@ -142,7 +162,6 @@ export default function StatisticPage() {
       <Box
         style={{
           width: "100%",
-          border: "1px solid white",
           display: "flex",
           gap: "20px",
           justifyContent: "space-between"
@@ -150,31 +169,31 @@ export default function StatisticPage() {
       >
         <Box
           className="top"
-          style={{ height: "100px", width: "200px", border: "1px solid white"}}
+          style={{ height: "100px", width: "200px", border: "1px solid white", padding: "5px", borderRadius: "3px"}}
+        >
+          <p>Most Pupolar</p>
+          <h2>{mostPopular}</h2>
+        </Box>
+        {/* <Box
+          className="top"
+          style={{ height: "100px", width: "200px", border: "1px solid white", padding: "5px", borderRadius: "3px" }}
         >
           <p>Most Pupolar</p>
           <h1>{totalNumber}</h1>
-        </Box>
+        </Box> */}
         <Box
           className="top"
-          style={{ height: "100px", width: "200px", border: "1px solid white" }}
-        >
-          <p>Most Pupolar</p>
-          <h1>{totalNumber}</h1>
-        </Box>
-        <Box
-          className="top"
-          style={{ height: "100px", width: "200px", border: "1px solid white" }}
+          style={{ height: "100px", width: "200px", border: "1px solid white", padding: "5px", borderRadius: "3px" }}
         >
           <p>Total Coffees</p>
           <h1>{totalNumber}</h1>
         </Box>
         <Box
           className="top"
-          style={{ height: "100px", width: "200px", border: "1px solid white" }}
+          style={{ height: "100px", width: "200px", border: "1px solid white", padding: "5px", borderRadius: "3px" }}
         >
           <p>Busiest Date</p>
-          <h1>{totalNumber}</h1>
+          <h2>Who knows</h2>
         </Box>
       </Box>
 

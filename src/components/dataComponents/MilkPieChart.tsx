@@ -1,14 +1,14 @@
-import { PieChart } from '@mui/x-charts/PieChart';
-type PieData = { id: number; value: number; label: string }; 
+import { PieChart } from "@mui/x-charts/PieChart";
+type PieData = { id: number; value: number; label: string };
 type PieDataArr = PieData[];
 type MilkPieChartProps = {
-  data: PieDataArr; 
+  data: PieDataArr;
 };
 
 export default function MilkPieChart({ data }: MilkPieChartProps) {
-  console.log('data in component:', data)
-    if (!data || data.length === 0) {
-    return <p>Loading milk data...</p>; 
+  console.log("data in component:", data);
+  if (!data || data.length === 0) {
+    return <p>Loading milk data...</p>;
   }
   return (
     <PieChart
@@ -21,8 +21,23 @@ export default function MilkPieChart({ data }: MilkPieChartProps) {
           data,
         },
       ]}
-      height={200}
-      width={200}
+      // height={300}
+      // width={300}
+      margin={{left:50}}
+      slotProps={{
+        legend: {
+          sx:{
+            color:"white",
+            marginRight:"40px",
+            width:"100px"
+          },
+          direction: "vertical",
+          position: {
+            vertical: "middle",
+            horizontal: "end",
+          },
+        },
+      }}
     />
   );
 }
