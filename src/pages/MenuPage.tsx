@@ -1,5 +1,5 @@
 import { db } from "../services/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { useEffect } from "react";
 import { useState } from "react";
 import type { Coffee } from "../types/coffee";
@@ -42,7 +42,8 @@ export default function MenuPage() {
   const fetchMenuItems = async () => {
     try {
       const menuCollection = collection(db, "coffee");
-      const menuSnapshot = await getDocs(menuCollection);
+      const q = query(menuCollection, orderBy("category", "asc"));
+      const menuSnapshot = await getDocs(q);
       const menuList: Coffee[] = menuSnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
@@ -52,6 +53,7 @@ export default function MenuPage() {
           category: data.category,
           imageUrl: data.imageUrl,
           isAvailable: data.isAvailable,
+          // isDecaf:data.isDecaf,
           tags: data.tags,
           popularity: data.popularity,
           hotOnly: data.hotOnly,

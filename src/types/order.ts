@@ -9,6 +9,7 @@ export const orderItemSchema = z.object({
     isHot: z.boolean().default(true),
     isXHot: z.boolean().default(false),
     isIced: z.boolean().default(false),
+    isDecaf: z.boolean().default(false),
     strength: z.number().min(0.5).max(4).default(1), // strength from 0.5 to 4 for coffee only
     quantity: z.number().min(1).default(1),
     isCompleted: z.boolean().default(false),
