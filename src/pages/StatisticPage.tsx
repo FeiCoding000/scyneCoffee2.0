@@ -178,9 +178,9 @@ export default function StatisticPage() {
           }}
         >
           <p>Most Pupolar</p>
-          <h1>{mostPopular[0].name}</h1>
-          <p>{mostPopular[1].name}</p>
-          <p>{mostPopular[2].name}</p>
+          <h1>{mostPopular[0]?.name}</h1>
+          <p>{mostPopular[1]?.name}</p>
+          <p>{mostPopular[2]?.name}</p>
         </Box>
         {/* <Box
           className="top"

@@ -1,5 +1,10 @@
 // NumberStepperRHF.tsx
-import { Controller, type Control, type FieldValues, type Path } from "react-hook-form";
+import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form";
 import { IconButton, TextField, Box, FormHelperText } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -26,22 +31,27 @@ export function NumberStepperRHF<T extends FieldValues>({
       rules={{
         min: { value: min, message: `Minimum is ${min}` },
         max: { value: max, message: `Maximum is ${max}` },
-        validate: (value) => Number.isInteger(value) || "Must be an integer",
+        validate: (value) =>
+          value === undefined ||
+          value === null ||
+          value === "" ||
+          Number.isInteger(value) ||
+          "Must be an integer",
       }}
       render={({ field, fieldState: { error } }) => (
         <Box>
           <Box display="flex" alignItems="center" gap={1}>
-
             <IconButton
               size="small"
               color="error"
-              onClick={() => field.onChange(Math.max(min, (field.value ?? 0) - 1))}
+              onClick={() =>
+                field.onChange(Math.max(min, (field.value ?? 0) - 1))
+              }
               disabled={field.value <= min}
             >
               <RemoveIcon />
             </IconButton>
 
-   
             <TextField
               label={label}
               value={field.value ?? 0}
@@ -55,11 +65,12 @@ export function NumberStepperRHF<T extends FieldValues>({
               error={!!error}
             />
 
-
             <IconButton
               size="small"
               color="primary"
-              onClick={() => field.onChange(Math.min(max, (field.value ?? 0) + 1))}
+              onClick={() =>
+                field.onChange(Math.min(max, (field.value ?? 0) + 1))
+              }
               disabled={field.value >= max}
             >
               <AddIcon />
