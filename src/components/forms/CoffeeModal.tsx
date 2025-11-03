@@ -37,7 +37,7 @@ export default function CoffeeModal({
   } = useForm<OrderItem>();
   const { addToCart } = useCart();
   const [isIced, setIsIced] = useState(false);
-  const [isXhot, setIsXhot] = useState(false);
+  const [isXHot, setIsXHot] = useState(false);
   const defaultMilk = coffee?.defaultMilk || "none";
 
   const onSubmit = (data: OrderItem) => {
@@ -169,7 +169,7 @@ export default function CoffeeModal({
                     onChange={(e) => {
                       const checked = e.target.checked;
                       setIsIced(checked);
-                      if (checked) setIsXhot(false);
+                      if (checked) setIsXHot(false);
                     }}
                   />
                 }
@@ -183,10 +183,10 @@ export default function CoffeeModal({
                 control={
                   <Checkbox
                     {...register("isXHot")}
-                    checked={isXhot}
+                    checked={isXHot}
                     onChange={(e) => {
                       const checked = e.target.checked;
-                      setIsXhot(checked);
+                      setIsXHot(checked);
                       if (checked) setIsIced(false);
                     }}
                   />
