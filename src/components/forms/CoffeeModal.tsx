@@ -33,6 +33,7 @@ export default function CoffeeModal({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<OrderItem>();
   const { addToCart } = useCart();
@@ -170,6 +171,8 @@ export default function CoffeeModal({
                       const checked = e.target.checked;
                       setIsIced(checked);
                       if (checked) setIsXHot(false);
+                      setValue("isIced", checked);
+                      setValue("isXHot", false);
                     }}
                   />
                 }
@@ -188,6 +191,8 @@ export default function CoffeeModal({
                       const checked = e.target.checked;
                       setIsXHot(checked);
                       if (checked) setIsIced(false);
+                      setValue("isXHot", checked);
+                      setValue("isIced", false);
                     }}
                   />
                 }
