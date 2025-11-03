@@ -3,6 +3,7 @@ import type { OrderItem } from "../../types/order";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useCart } from "../../contexts/CartContext";
+import NumberStepperRHF from "../utils/NumberStepper";
 import {
   Modal,
   Box,
@@ -34,6 +35,7 @@ export default function CoffeeModal({
     handleSubmit,
     reset,
     setValue,
+    control,
     formState: { errors },
   } = useForm<OrderItem>();
   const { addToCart } = useCart();
@@ -92,46 +94,6 @@ export default function CoffeeModal({
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2}>
-            {/* Quantity */}
-            <TextField
-              label="Quantity"
-              type="number"
-              defaultValue={1}
-              {...register("quantity", {
-                required: "Quantity is required",
-                valueAsNumber: true,
-                min: { value: 1, message: "Minimum 1" },
-                max: { value: 10, message: "Maximum 10" },
-                validate: (value) =>
-                  Number.isInteger(value) || "Must be an integer",
-              })}
-              error={!!errors.quantity}
-              helperText={errors.quantity?.message}
-              onKeyDown={(e) => {
-                if (["e", "E", "+", "-", "."].includes(e.key)) {
-                  e.preventDefault();
-                }
-              }}
-            />
-
-            {/* Milk */}
-            <FormControl fullWidth>
-              <InputLabel>Milk</InputLabel>
-              <Select
-                defaultValue={defaultMilk}
-                {...register("milk", { required: true })}
-              >
-                <MuiMenuItem value="full cream">Full Cream</MuiMenuItem>
-                <MuiMenuItem value="lite">Lite</MuiMenuItem>
-                <MuiMenuItem value="skim">Skim</MuiMenuItem>
-                <MuiMenuItem value="lactose free">Lactose free</MuiMenuItem>
-                <MuiMenuItem value="almond">Almond</MuiMenuItem>
-                <MuiMenuItem value="soy">Soy</MuiMenuItem>
-                <MuiMenuItem value="oat">Oat</MuiMenuItem>
-                <MuiMenuItem value="none">None</MuiMenuItem>
-              </Select>
-            </FormControl>
-
             {/* Strength or Tea Bags */}
             {coffee?.category === "tea" ? (
               <FormControl fullWidth>
@@ -159,6 +121,46 @@ export default function CoffeeModal({
                 </Select>
               </FormControl>
             )}
+
+            {/* Milk */}
+            <FormControl fullWidth>
+              <InputLabel>Milk</InputLabel>
+              <Select
+                defaultValue={defaultMilk}
+                {...register("milk", { required: true })}
+              >
+                <MuiMenuItem value="full cream">Full Cream</MuiMenuItem>
+                <MuiMenuItem value="lite">Lite</MuiMenuItem>
+                <MuiMenuItem value="skim">Skim</MuiMenuItem>
+                <MuiMenuItem value="lactose free">Lactose free</MuiMenuItem>
+                <MuiMenuItem value="almond">Almond</MuiMenuItem>
+                <MuiMenuItem value="soy">Soy</MuiMenuItem>
+                <MuiMenuItem value="oat">Oat</MuiMenuItem>
+                <MuiMenuItem value="none">None</MuiMenuItem>
+              </Select>
+            </FormControl>
+
+            {/* Quantity */}
+            <TextField
+              label="Quantity"
+              type="number"
+              defaultValue={1}
+              {...register("quantity", {
+                required: "Quantity is required",
+                valueAsNumber: true,
+                min: { value: 1, message: "Minimum 1" },
+                max: { value: 10, message: "Maximum 10" },
+                validate: (value) =>
+                  Number.isInteger(value) || "Must be an integer",
+              })}
+              error={!!errors.quantity}
+              helperText={errors.quantity?.message}
+              onKeyDown={(e) => {
+                if (["e", "E", "+", "-", "."].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
+            />
 
             {/* Iced */}
             {!coffee?.hotOnly && (
@@ -208,7 +210,7 @@ export default function CoffeeModal({
             )}
 
             {/* Sugar */}
-            <TextField
+            {/* <TextField
               label="Sugar"
               type="number"
               defaultValue={0}
@@ -221,10 +223,10 @@ export default function CoffeeModal({
               })}
               error={!!errors.sugar}
               helperText={errors.sugar?.message}
-            />
+            /> */}
 
             {/* Sweetener */}
-            <TextField
+            {/* <TextField
               label="Sweetener"
               type="number"
               defaultValue={0}
@@ -237,6 +239,22 @@ export default function CoffeeModal({
               })}
               error={!!errors.sweetner}
               helperText={errors.sweetner?.message}
+            /> */}
+
+            <NumberStepperRHF<OrderItem>
+              name="sugar"
+              control={control}
+              label="Sugar"
+              min={0}
+              max={10}
+            />
+
+            <NumberStepperRHF<OrderItem>
+              name="sweetner"
+              control={control}
+              label="Sweetener"
+              min={0}
+              max={10}
             />
 
             {/* Buttons */}

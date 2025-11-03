@@ -15,7 +15,7 @@ export default function MilkPieChart({ data }: MilkPieChartProps) {
       series={[
         {
           startAngle: -180,
-          endAngle: 0,
+          endAngle: 180,
           innerRadius: 70,
           outerRadius: 100,
           data,

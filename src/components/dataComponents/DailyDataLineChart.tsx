@@ -1,4 +1,3 @@
-// components/EChartLine.tsx
 import React from "react";
 import ReactECharts from "echarts-for-react";
 
@@ -13,10 +12,10 @@ const DailyDataLineChart: React.FC<EChartLineProps> = ({ xData, yData, title }) 
     title: {
       text: title || "",
       textStyle: {
-      color: "#eee9e9ff",       // 字体颜色
-      fontSize: 14,        // 字体大小
-      fontWeight: "none",  // 粗细
-      fontFamily: "Arial"  // 字体
+      color: "#ffffffff",      
+      fontSize: 14,       
+      fontWeight: "none",  
+      fontFamily: "Arial"  
     }
     },
     tooltip: {
