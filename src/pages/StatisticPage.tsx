@@ -140,7 +140,7 @@ export default function StatisticPage() {
       // DD/MM/YYYY -> YYYY-MM-DD
       const dateA = new Date(a.date.split("/").reverse().join("-"));
       const dateB = new Date(b.date.split("/").reverse().join("-"));
-      return dateA.getTime() - dateB.getTime();
+      return dateB.getTime() - dateA.getTime();
     });
 
   const xData = sortedArray.map((item) => item.date);
