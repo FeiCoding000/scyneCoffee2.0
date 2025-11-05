@@ -59,7 +59,7 @@ export default function MenuItemCard(props: {
       </div>
       <div>
         <h2 style={{ fontFamily: "monospace", marginBottom: "4px", fontSize:"22px" }}>{name}</h2>
-        <div style={{display:"flex", justifyContent:"space-between", marginBottom: "3px"}}><p>Pupularity: </p><p>{"★".repeat(starNumber) + "☆".repeat(5 - starNumber)}</p></div>
+        <div style={{display:"flex", justifyContent:"space-between", marginBottom: "3px"}}><p>Popularity: </p><p>{"★".repeat(starNumber) + "☆".repeat(5 - starNumber)}</p></div>
         
         <p style={{ textAlign: "justify", marginBottom: "5px", fontSize: "13px" }}>
           {description}
