@@ -29,7 +29,7 @@ export default function MenuItemCard(props: {
         }
       }}
     >
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative",}}>
         {!props.coffee.isAvailable && (
           <div
             style={{
@@ -37,6 +37,10 @@ export default function MenuItemCard(props: {
               right: "3px",
               top: "3px",
               color: "white",
+              border: "1px white solid",
+              padding:"1px",
+              borderRadius:"3px",
+              backgroundColor: "rgba(0,0,0, 0.5)"
             }}
           >
             Unavailable
@@ -54,8 +58,9 @@ export default function MenuItemCard(props: {
         />
       </div>
       <div>
-        <h2 style={{ fontFamily: "monospace", marginBottom: "4px" }}>{name}</h2>
-        <p>{"★".repeat(starNumber) + "☆".repeat(5 - starNumber)}</p>
+        <h2 style={{ fontFamily: "monospace", marginBottom: "4px", fontSize:"22px" }}>{name}</h2>
+        <div style={{display:"flex", justifyContent:"space-between", marginBottom: "3px"}}><p>Pupularity: </p><p>{"★".repeat(starNumber) + "☆".repeat(5 - starNumber)}</p></div>
+        
         <p style={{ textAlign: "justify", marginBottom: "5px", fontSize: "13px" }}>
           {description}
         </p>

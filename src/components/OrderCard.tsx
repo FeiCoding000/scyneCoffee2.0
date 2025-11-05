@@ -89,6 +89,8 @@ export default function OrderCard({ order }: { order: Order }) {
                   Milk: {item.milk || "none"}
                 </Typography>
 
+
+
                 {item.sugar > 0 && (
                   <Typography variant="body2">Sugar: {item.sugar}</Typography>
                 )}
@@ -98,6 +100,9 @@ export default function OrderCard({ order }: { order: Order }) {
                   </Typography>
                 )}
 
+                {item.isDecaf && <Typography color="primary" variant="body2">
+                    🛑Decaf
+                  </Typography>}
                 {item.isIced && (
                   <Typography color="primary" variant="body2">
                     🧊 Iced

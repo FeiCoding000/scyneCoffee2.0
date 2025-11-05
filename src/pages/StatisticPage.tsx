@@ -72,7 +72,10 @@ export default function StatisticPage() {
     const dailyInfo: Record<string, number> = {};
 
     orders?.forEach((order: Order) => {
-      const date = order.createdAt;
+      const timestamp = order.createdAt;
+      const date = timestamp.toDate();
+      console.log("converted date", date)
+
       const dayKey = date.toLocaleDateString("en-AU", {
         timeZone: "Australia/Sydney",
       });
@@ -101,8 +104,8 @@ export default function StatisticPage() {
         const orders: Order[] = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-          createdAt: doc.data().createdAt.toDate(),
-          updatedAt: doc.data().updatedAt.toDate(),
+          createdAt: doc.data().createdAt,
+          updatedAt: doc.data().updatedAt,
         })) as Order[];
         console.log("Orders:", orders);
         setOrders(orders);

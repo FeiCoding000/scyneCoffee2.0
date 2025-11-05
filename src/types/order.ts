@@ -1,4 +1,10 @@
 import { z } from "zod";
+import { Timestamp } from "firebase/firestore";
+
+const zTimestamp = z.custom<Timestamp>(
+  (value) => value instanceof Timestamp,
+  { message: "Expected Firestore Timestamp" }
+);
 
 /**
  * each item in an order
@@ -30,8 +36,8 @@ export const OrderSchema = z.object({
     customerName: z.string(),
     items: z.array(orderItemSchema),
     isCompleted: z.boolean().default(false),
-    createdAt: z.date(),
-    updatedAt: z.date()
+    createdAt: zTimestamp,
+    updatedAt: zTimestamp
 });
 
 export type OrderItem = z.infer<typeof orderItemSchema>;

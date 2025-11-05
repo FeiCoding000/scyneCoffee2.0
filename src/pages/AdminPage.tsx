@@ -47,7 +47,7 @@ export default function AdminPage() {
         alignItems="center"
         sx={{ mb: 3 }}
       >
-        <Typography variant="h4">Coffee Management</Typography>
+        <Typography variant="h5">Menu management</Typography>
         <Button
           variant="contained"
           color="primary"
