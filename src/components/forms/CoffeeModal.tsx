@@ -202,7 +202,7 @@ export default function CoffeeModal({
               />
             )}
 
-            {coffee && (
+            {coffee?.category === "coffee" && (
               <FormControlLabel
                 control={<Checkbox {...register("isDecaf")} />}
                 label="Decaf"

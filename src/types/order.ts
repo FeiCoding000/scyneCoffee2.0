@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Timestamp } from "firebase/firestore";
 
-const zTimestamp = z.custom<Timestamp>(
+export const zTimestamp = z.custom<Timestamp>(
   (value) => value instanceof Timestamp,
   { message: "Expected Firestore Timestamp" }
 );

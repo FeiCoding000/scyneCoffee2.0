@@ -16,6 +16,7 @@ import {
   Alert,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Timestamp } from "firebase/firestore";
 
 export default function CartModal({
   isOpen,
@@ -32,12 +33,13 @@ export default function CartModal({
   const [submitWarning, setSubmitWarning] = useState("");
   const [rightOffset, setRightOffset] = useState(0);
 
+  const now = Timestamp.now()
   const order: Order = {
     items: cartItems,
     customerName: customerName,
     isCompleted: false,
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: now,
+    updatedAt: now,
   };
 
   const updateOffset = () => {
