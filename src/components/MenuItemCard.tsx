@@ -10,7 +10,16 @@ export default function MenuItemCard(props: {
   const onSelect = props.onSelect;
   const coffeeItem = props.coffee;
   const maxPopularity = props.maxPopularity || 1;
-  const raw = (popularity / maxPopularity) * 5;
+  //original solution
+  // const raw = (popularity / maxPopularity) * 5;
+  //second solution
+  const raw = (Math.sqrt(popularity) / Math.sqrt(maxPopularity)) * 5;
+  //third solution
+  // const diff = maxPopularity - popularity;
+  // const adjusted = Math.sqrt(diff) + popularity;
+  // const maxAdjusted = Math.sqrt(0) + maxPopularity; // = maxPopularity
+  // const raw = (adjusted / maxAdjusted) * 5;
+
   const starNumber = popularity > 0 ? Math.max(1, Math.ceil(raw)) : 0;
   return (
     <div
@@ -29,7 +38,7 @@ export default function MenuItemCard(props: {
         }
       }}
     >
-      <div style={{ position: "relative",}}>
+      <div style={{ position: "relative" }}>
         {!props.coffee.isAvailable && (
           <div
             style={{
@@ -38,9 +47,9 @@ export default function MenuItemCard(props: {
               top: "3px",
               color: "white",
               border: "1px white solid",
-              padding:"1px",
-              borderRadius:"3px",
-              backgroundColor: "rgba(0,0,0, 0.5)"
+              padding: "1px",
+              borderRadius: "3px",
+              backgroundColor: "rgba(0,0,0, 0.5)",
             }}
           >
             Unavailable
@@ -58,10 +67,33 @@ export default function MenuItemCard(props: {
         />
       </div>
       <div>
-        <h2 style={{ fontFamily: "monospace", marginBottom: "4px", fontSize:"22px" }}>{name}</h2>
-        <div style={{display:"flex", justifyContent:"space-between", marginBottom: "3px"}}><p>Popularity: </p><p>{"★".repeat(starNumber) + "☆".repeat(5 - starNumber)}</p></div>
-        
-        <p style={{ textAlign: "justify", marginBottom: "5px", fontSize: "13px" }}>
+        <h2
+          style={{
+            fontFamily: "monospace",
+            marginBottom: "4px",
+            fontSize: "22px",
+          }}
+        >
+          {name}
+        </h2>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "3px",
+          }}
+        >
+          <p>Popularity: </p>
+          <p>{"★".repeat(starNumber) + "☆".repeat(5 - starNumber)}</p>
+        </div>
+
+        <p
+          style={{
+            textAlign: "justify",
+            marginBottom: "5px",
+            fontSize: "13px",
+          }}
+        >
           {description}
         </p>
       </div>
