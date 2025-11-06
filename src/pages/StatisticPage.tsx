@@ -74,8 +74,6 @@ export default function StatisticPage() {
     orders?.forEach((order: Order) => {
       const timestamp = order.createdAt;
       const date = timestamp.toDate();
-      console.log("converted date", date)
-
       const dayKey = date.toLocaleDateString("en-AU", {
         timeZone: "Australia/Sydney",
       });
@@ -140,11 +138,13 @@ export default function StatisticPage() {
   const sortedArray = Object.entries(dailyCoffeeNumber)
     .map(([date, value]) => ({ date, value }))
     .sort((a, b) => {
-      // DD/MM/YYYY -> YYYY-MM-DD
-      const dateA = new Date(a.date.split("/").reverse().join("-"));
-      const dateB = new Date(b.date.split("/").reverse().join("-"));
+      const [dayA, monthA, yearA] = a.date.split("/");
+      const [dayB, monthB, yearB] = b.date.split("/");
+      const dateA = new Date(`${yearA}-${monthA}-${dayA}`);
+      const dateB = new Date(`${yearB}-${monthB}-${dayB}`);
       return dateA.getTime() - dateB.getTime();
     });
+    console.log("sorted:", sortedArray)
 
   const xData = sortedArray.map((item) => item.date);
   const yData = sortedArray.map((item) => item.value);

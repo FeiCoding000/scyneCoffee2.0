@@ -6,7 +6,6 @@ type MilkPieChartProps = {
 };
 
 export default function MilkPieChart({ data }: MilkPieChartProps) {
-  console.log("data in component:", data);
   if (!data || data.length === 0) {
     return <p>Loading milk data...</p>;
   }
