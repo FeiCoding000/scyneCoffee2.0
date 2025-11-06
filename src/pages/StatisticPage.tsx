@@ -50,7 +50,6 @@ export default function StatisticPage() {
         milkInfo[item.milk] = (milkInfo[item.milk] ?? 0) + item.quantity;
       });
     });
-    ("Milk info", milkInfo);
     const pieChartArray = Object.entries(milkInfo).map(
       ([key, value], index) => ({
         id: index,
