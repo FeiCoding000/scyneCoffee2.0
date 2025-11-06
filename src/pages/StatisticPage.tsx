@@ -73,9 +73,13 @@ export default function StatisticPage() {
     orders?.forEach((order: Order) => {
       const timestamp = order.createdAt;
       const date = timestamp.toDate();
-      const dayKey = date.toLocaleDateString("en-AU", {
+      const formatter = new Intl.DateTimeFormat("en-AU", {
         timeZone: "Australia/Sydney",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
       });
+      const dayKey = formatter.format(date);
       if (!dailyInfo[dayKey]) {
         dailyInfo[dayKey] = 0;
       }
