@@ -50,7 +50,7 @@ export default function StatisticPage() {
         milkInfo[item.milk] = (milkInfo[item.milk] ?? 0) + item.quantity;
       });
     });
-    console.log("Milk info", milkInfo);
+    ("Milk info", milkInfo);
     const pieChartArray = Object.entries(milkInfo).map(
       ([key, value], index) => ({
         id: index,
@@ -84,7 +84,6 @@ export default function StatisticPage() {
         dailyInfo[dayKey] += item.quantity ?? 1;
       });
     });
-    console.log("dailyInfo", dailyInfo);
     setDailyCoffeeNumber(dailyInfo);
     return dailyInfo;
   };
@@ -105,7 +104,6 @@ export default function StatisticPage() {
           createdAt: doc.data().createdAt,
           updatedAt: doc.data().updatedAt,
         })) as Order[];
-        console.log("Orders:", orders);
         setOrders(orders);
       } catch (error) {
         console.log(error);
@@ -144,7 +142,6 @@ export default function StatisticPage() {
       const dateB = new Date(`${yearB}-${monthB}-${dayB}`);
       return dateA.getTime() - dateB.getTime();
     });
-    console.log("sorted:", sortedArray)
 
   const xData = sortedArray.map((item) => item.date);
   const yData = sortedArray.map((item) => item.value);
