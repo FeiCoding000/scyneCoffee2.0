@@ -77,7 +77,7 @@ export default function OrderCard({ order }: { order: Order }) {
               <Box sx={{ pl: 1 }}>
                 {item.strength ? (
                   <Typography variant="body2">
-                    Strength: {item.strength}
+                    ☕Strength: {item.strength}
                   </Typography>
                 ) : item.teaBags ? (
                   <Typography variant="body2">
@@ -86,17 +86,17 @@ export default function OrderCard({ order }: { order: Order }) {
                 ) : null}
 
                 <Typography variant="body2">
-                  Milk: {item.milk || "none"}
+                  🥛Milk: {item.milk || "none"}
                 </Typography>
 
 
 
                 {item.sugar > 0 && (
-                  <Typography variant="body2">Sugar: {item.sugar}</Typography>
+                  <Typography variant="body2">🍭Sugar: {item.sugar} {"🍭".repeat(item.sugar)}</Typography>
                 )}
                 {item.sweetner > 0 && (
                   <Typography variant="body2">
-                    Sweetener: {item.sweetner}
+                    🍬Sweetener: {item.sweetner} {"🍬".repeat(item.sweetner)}
                   </Typography>
                 )}
 
@@ -115,7 +115,7 @@ export default function OrderCard({ order }: { order: Order }) {
                 )}
 
                 <Typography fontWeight="bold" variant="body2">
-                  Quantity: {item.quantity}
+                  📈Quantity: {item.quantity}
                 </Typography>
               </Box>
             </Paper>

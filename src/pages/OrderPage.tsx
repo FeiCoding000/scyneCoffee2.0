@@ -23,7 +23,6 @@ export default function OrderList() {
       const sortedOrders = fetchedOrders.sort((a, b) => {
         return a.createdAt.seconds - b.createdAt.seconds;
       });
-      console.log("Sorted",sortedOrders);
       setOrders(sortedOrders);
       setLoading(false);
     });

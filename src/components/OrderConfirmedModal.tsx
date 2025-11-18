@@ -1,17 +1,26 @@
 import { getDocs, collection, query, where } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../services/firebase";
-import { Modal, Box, Typography, CircularProgress, Button } from "@mui/material";
+import {
+  Modal,
+  Box,
+  Typography,
+  CircularProgress,
+  Button,
+} from "@mui/material";
 
 interface OrderConfirmedModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-export default function OrderConfirmedModal({ open, onClose }: OrderConfirmedModalProps) {
+export default function OrderConfirmedModal({
+  open,
+  onClose,
+}: OrderConfirmedModalProps) {
   const [pendingOrders, setPendingOrders] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [isClosing, setIsClosing] = useState(false); 
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -35,10 +44,10 @@ export default function OrderConfirmedModal({ open, onClose }: OrderConfirmedMod
   }, [open]);
 
   const handleClose = () => {
-    setIsClosing(true); 
+    setIsClosing(true);
     setTimeout(() => {
       setIsClosing(false);
-      onClose(); 
+      onClose();
     }, 1000);
   };
 
@@ -56,22 +65,32 @@ export default function OrderConfirmedModal({ open, onClose }: OrderConfirmedMod
           minWidth: 500,
           maxWidth: 400,
           textAlign: "center",
-          overflow: "hidden"
+          overflow: "hidden",
         }}
       >
-        <div style={ {border : "grey solid 1px", padding:"5px"} }>
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', m: 2 }}>
-          Order Confirmed
-        </Typography>
+        <div style={{ border: "grey solid 1px", padding: "5px" }}>
+          <Typography
+            variant="h5"
+            gutterBottom
+            sx={{ fontWeight: "bold", m: 2 }}
+          >
+            Order Confirmed
+          </Typography>
         </div>
-
 
         {isLoading ? (
           <CircularProgress />
         ) : (
-          <Typography variant="h6" sx={{ m: 4}}>
-            You have {pendingOrders} pending {pendingOrders === 1 ? "order" : "orders"} in the queue.
-          </Typography>
+          <div>
+            <Typography variant="h6" sx={{ m: 3 }}>
+              There {pendingOrders > 2 ? "are" : "is"}{" "}
+              {pendingOrders - 1 === 0 ? "no" : `${pendingOrders - 1}`}{" "}
+              {pendingOrders > 2 ? "orders" : "order"} in the queue.
+            </Typography>
+              <Typography variant="h6" sx={{ m: 3 }}>
+              🕑Estimate wait time: {(pendingOrders) * 2} minutes.
+            </Typography>
+          </div>
         )}
 
         <Button
@@ -79,7 +98,7 @@ export default function OrderConfirmedModal({ open, onClose }: OrderConfirmedMod
           color="primary"
           onClick={handleClose}
           disabled={isClosing || isLoading}
-          sx={{m:3}}
+          sx={{ m: 3 }}
         >
           {isClosing ? (
             <>

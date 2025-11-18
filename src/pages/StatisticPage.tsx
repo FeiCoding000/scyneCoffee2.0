@@ -178,32 +178,18 @@ export default function StatisticPage() {
             border: "1px solid white",
             padding: "5px",
             borderRadius: "3px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+            alignItems: "start",
           }}
         >
-          <p>Most Pupolar</p>
-          <h1>{mostPopular[0]?.name}</h1>
-          <p>{mostPopular[1]?.name}</p>
-          <p>{mostPopular[2]?.name}</p>
-        </Box>
-        {/* <Box
-          className="top"
-          style={{ height: "100px", width: "200px", border: "1px solid white", padding: "5px", borderRadius: "3px" }}
-        >
-          <p>Most Pupolar</p>
-          <h1>{totalNumber}</h1>
-        </Box> */}
-        <Box
-          className="top"
-          style={{
-            height: "120px",
-            width: "200px",
-            border: "1px solid white",
-            padding: "5px",
-            borderRadius: "3px",
-          }}
-        >
-          <p>Total Coffees</p>
-          <h1>{totalNumber}</h1>
+          <div style={{textAlign: "center", width: "100%"}}>
+          <h4>Most Pupolar</h4>
+          </div>
+          <div style={{position: "relative"}}><h1>{mostPopular[0]?.name}</h1> <p style={{position:"absolute", top:0, right: 0,fontSize: "12px", padding:"1px",backgroundColor:"rgba(221, 42, 72)", borderRadius:"5px" }}>{mostPopular[0]?.popularity}</p></div>
+          <p>{mostPopular[1]?.name} ---{mostPopular[1]?.popularity}</p>
+          <p>{mostPopular[2]?.name} ---{mostPopular[2]?.popularity}</p>
         </Box>
         <Box
           className="top"
@@ -213,9 +199,33 @@ export default function StatisticPage() {
             border: "1px solid white",
             padding: "5px",
             borderRadius: "3px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+            alignItems: "center",
           }}
         >
-          <p>Busiest Date</p>
+          <h4 style={{textAlign: "center"}}>Total Coffees</h4>
+          <h1>{totalNumber}</h1>
+        </Box>
+        <Box
+          className="top"
+          style={{
+            height: "120px",
+            width: "200px",
+            border: "1px solid white",
+            padding: "5px",
+            borderRadius: "3px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+            alignItems: "center"
+          }}
+        >
+          <div>
+          <h4 style={{textAlign: "center",}}>Busiest Date</h4>
+          </div>
+          
           <h2>Who knows</h2>
         </Box>
       </Box>

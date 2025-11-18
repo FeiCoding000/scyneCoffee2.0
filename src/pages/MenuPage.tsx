@@ -42,7 +42,7 @@ export default function MenuPage() {
   const fetchMenuItems = async () => {
     try {
       const menuCollection = collection(db, "coffee");
-      const q = query(menuCollection, orderBy("category", "asc"));
+      const q = query(menuCollection, orderBy("category", "asc"), orderBy("popularity", "desc"));
       const menuSnapshot = await getDocs(q);
       const menuList: Coffee[] = menuSnapshot.docs.map((doc) => {
         const data = doc.data();
