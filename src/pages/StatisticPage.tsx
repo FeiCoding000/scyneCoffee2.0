@@ -185,7 +185,7 @@ export default function StatisticPage() {
           }}
         >
           <div style={{textAlign: "center", width: "100%"}}>
-          <h4>Most Pupolar</h4>
+          <h4>Most Popular</h4>
           </div>
           <div style={{position: "relative"}}><h1>{mostPopular[0]?.name}</h1> <p style={{position:"absolute", top:0, right: 0,fontSize: "12px", padding:"1px",backgroundColor:"rgba(221, 42, 72)", borderRadius:"5px" }}>{mostPopular[0]?.popularity}</p></div>
           <p>{mostPopular[1]?.name} ---{mostPopular[1]?.popularity}</p>
@@ -247,7 +247,13 @@ export default function StatisticPage() {
         >
           <MilkPieChart data={milkData}></MilkPieChart>
         </Box>
+
       </Box>
+              {milkData.map((milk) => (
+          <div key={milk.id}>
+            {milk.label}: {milk.value}
+          </div>
+        ))}
     </Box>
   );
 }

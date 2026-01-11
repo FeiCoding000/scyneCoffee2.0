@@ -45,7 +45,8 @@ export default function NavBar() {
         }}
       >
         <span>
-          Welcome, {disPlayName?.toUpperCase()}
+          {/* Happy New Year! {disPlayName?.toUpperCase()} */}
+          Happy New Year! 
         </span>
         <Cart />
         <Button
