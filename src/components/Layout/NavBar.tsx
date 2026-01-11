@@ -14,7 +14,7 @@ export default function NavBar() {
     navigate("/login");
   };
 
-  const disPlayName = user?.displayName ? user.displayName : user?.email;
+  // const disPlayName = user?.displayName ? user.displayName : user?.email;
 
   return user ? (
     <div className="navBar-left" 
