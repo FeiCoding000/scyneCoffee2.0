@@ -57,7 +57,7 @@ export default function SideBar() {
         Report
         </MenuItem>
       </Menu>
-      <Box style={{ padding: "10px", marginBottom: "80px", backgroundColor: "#f0f0f0", borderRadius: "8px", color: "black" }}>
+      <Box style={{ padding: "10px", marginBottom: "160px", backgroundColor: "#f0f0f0", borderRadius: "8px", color: "black" }}>
         <QueueList />
       </Box>
     </Box>
