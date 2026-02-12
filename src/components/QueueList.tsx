@@ -11,10 +11,10 @@ export default function QueueList() {
     useEffect(() => {
         const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
         const orderRef = collection(db, 'orders');
-        const q = query(orderRef, where('createdAt', '>=', thirtyMinutesAgo), orderBy('createdAt', 'asc'), limit(10));
+        const q = query(orderRef, where('createdAt', '>=', thirtyMinutesAgo), orderBy('createdAt', 'desc'), limit(10));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const orders : Order[] = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as Order }));
+            const orders : Order[] = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as Order })).reverse();
             setRecentTenOrders(orders);
             setLoading(false);
         });
