@@ -6,6 +6,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import BugReportIcon from '@mui/icons-material/BugReport';
+import QueueList from "../QueueList";
 
 export default function SideBar() {
   const menuItemStyles = {
@@ -26,10 +27,11 @@ export default function SideBar() {
     <Box
       className="sidebar"
       style={{
-        height: "100%",
+        height: "100vh",
         width: "100%",
         display: "flex",
         flexDirection: "column",
+        justifyContent: "space-between",
         paddingLeft: "10px",
         marginTop:"30px",
       }}
@@ -55,6 +57,10 @@ export default function SideBar() {
         Report
         </MenuItem>
       </Menu>
+      <Box style={{ padding: "10px", marginBottom: "80px", backgroundColor: "#f0f0f0", borderRadius: "8px", color: "black" }}>
+        <QueueList />
+      </Box>
     </Box>
   );
-}
+} 
+

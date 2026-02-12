@@ -46,7 +46,6 @@ export default function NavBar() {
       >
         <span>
           {/* Happy New Year! {disPlayName?.toUpperCase()} */}
-          Happy New Year! 
         </span>
         <Cart />
         <Button
