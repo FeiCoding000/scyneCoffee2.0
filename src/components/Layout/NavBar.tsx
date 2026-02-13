@@ -2,6 +2,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Cart from "../Cart";
 import { Box, Button } from "@mui/material";
+import packageJson from "../../../package.json";
 
 export default function NavBar() {
   const { user, logout } = useAuth();
@@ -67,6 +68,7 @@ export default function NavBar() {
         >
           Logout
         </Button>
+        <p>Version: {packageJson.version} </p>
       </div>
     </div>
   ) : (

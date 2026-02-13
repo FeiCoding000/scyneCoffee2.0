@@ -100,3 +100,14 @@ ul, ol {
   }
 
 }
+
+#root {
+  height: 100vh;
+  overflow-y: auto;
+
+  scrollbar-width: none;
+}
+
+#root::-webkit-scrollbar {
+  display: none;
+}
