@@ -5,15 +5,15 @@ import { Box, Button } from "@mui/material";
 import packageJson from "../../../package.json";
 
 export default function NavBar() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const handleNavigate = () => {
     navigate("/login");
   };
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
+  // const handleLogout = () => {
+  //   logout();
+  //   navigate("/login");
+  // };
 
   // const disPlayName = user?.displayName ? user.displayName : user?.email;
 
@@ -49,7 +49,7 @@ export default function NavBar() {
           {/* Happy New Year! {disPlayName?.toUpperCase()} */}
         </span>
         <Cart />
-        <Button
+        {/* <Button
           sx={{
             backgroundColor: "#7069d5ff",
             color: "white",
@@ -67,22 +67,48 @@ export default function NavBar() {
           onClick={handleLogout}
         >
           Logout
-        </Button>
+        </Button> */}
         <p>Version: {packageJson.version} </p>
       </div>
     </div>
   ) : (
     <div
       style={{
+        width: "100%",
         display: "flex",
         justifyContent: "space-between",
         padding: "20px",
         marginRight: "10px",
-        backgroundColor: "#dbdae4ff",
+        backgroundColor: "rgba(219, 218, 228, 0)",
         zIndex: "1000",
       }}
     >
-      <Button onClick={handleNavigate}>Login</Button>
+      <Box sx={{ textAlign: "center" }}>
+        <img
+          src="https://cdn.prod.website-files.com/650aedb6397a7021a593e810/672ac5664163926064db6bd7_scyne-logo.svg"
+          alt="Scyne Logo"
+          style={{ height: "30px", width: "auto", paddingLeft: "10px", marginTop:"5px" }}
+        />
+      </Box>
+      <Button
+          sx={{
+            backgroundColor: "#7069d5ff",
+            color: "white",
+            borderColor: "white",
+            marginTop: "5px",
+            height: "25px",
+            "&:hover": {
+              backgroundColor: "#01051bff",
+              color: "white",
+            },
+          }}
+          variant="outlined"
+          size="small"
+          color="primary"
+          onClick={handleNavigate}
+        >
+          Login
+        </Button>
     </div>
   );
 }
