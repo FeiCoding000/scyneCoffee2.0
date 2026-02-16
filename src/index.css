@@ -55,31 +55,6 @@ ul, ol {
   grid-template-columns: repeat(2, 1fr); 
 }
 
-@media (min-width: 1400px) {
-  .menu-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
-    .navBar-right span {
-    display: inline-block;
-  }
-  .layout-aside {
-    width: 160px;
-  }
-}
-
-@media (min-width: 1000px) {
-  .menu-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .navBar-right span {
-    display: inline-block;
-  }
-  .layout-aside {
-    width: 160px;
-  }
-}
-
-
 @media (min-width: 660px) {
   .menu-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -96,7 +71,30 @@ ul, ol {
   .home-container h1 {
     font-size: 20px;
   }
+}
 
+@media (min-width: 1000px) {
+  .menu-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .navBar-right span {
+    display: inline-block;
+  }
+  .layout-aside {
+    width: 160px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .menu-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+    .navBar-right span {
+    display: inline-block;
+  }
+  .layout-aside {
+    width: 160px;
+  }
 }
 
 @media (max-width: 660px) {
