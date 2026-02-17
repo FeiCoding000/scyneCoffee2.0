@@ -20,13 +20,13 @@ export default function MilkPieChart({ data }: MilkPieChartProps) {
           data,
         },
       ]}
-      height={300}
-      width={300}
+      height={400}
+      width={400}
       margin={{left:50}}
       slotProps={{
         legend: {
           sx:{
-            color:"white",
+            color:"black",
             marginRight:"40px",
             width:"100px"
           },

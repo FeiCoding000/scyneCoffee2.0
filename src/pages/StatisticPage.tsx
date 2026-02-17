@@ -4,8 +4,10 @@ import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import type { Order } from "../types/order";
 import DailyDataLineChart from "../components/dataComponents/DailyDataLineChart";
 import MilkPieChart from "../components/dataComponents/MilkPieChart";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import type { Coffee } from "../types/coffee";
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 export default function StatisticPage() {
   const [milkData, setMilkData] = useState<
@@ -18,6 +20,7 @@ export default function StatisticPage() {
   const [totalNumber, setTotalNumber] = useState(0);
   const [orders, setOrders] = useState<Order[]>();
   const [mostPopular, setMostPopular] = useState<Coffee[]>([]);
+  const [milkDetail, setMilkDetail] = useState(false);
 
   //total coffees ordered
   const calculateTotalNumber = (orders: Order[]) => {
@@ -153,7 +156,7 @@ export default function StatisticPage() {
 
   return (
     <Box
-      className="container"
+      className="statisticContainer"
       style={{
         width: "98%",
         height: "80vh",
@@ -173,67 +176,57 @@ export default function StatisticPage() {
         <Box
           className="top"
           style={{
+            color: "black",
             height: "120px",
-            width: "200px",
+            width: "50%",
             border: "1px solid white",
             padding: "5px",
             borderRadius: "3px",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            alignItems: "start",
-          }}
-        >
-          <div style={{textAlign: "center", width: "100%"}}>
-          <h4>Most Popular</h4>
-          </div>
-          <div style={{position: "relative"}}><h1>{mostPopular[0]?.name}</h1> <p style={{position:"absolute", top:0, right: 0,fontSize: "12px", padding:"1px",backgroundColor:"rgba(221, 42, 72)", borderRadius:"5px" }}>{mostPopular[0]?.popularity}</p></div>
-          <p>{mostPopular[1]?.name} ---{mostPopular[1]?.popularity}</p>
-          <p>{mostPopular[2]?.name} ---{mostPopular[2]?.popularity}</p>
-        </Box>
-        <Box
-          className="top"
-          style={{
-            height: "120px",
-            width: "200px",
-            border: "1px solid white",
-            padding: "5px",
-            borderRadius: "3px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
+            justifyContent: "center",
+            gap: "20px",
             alignItems: "center",
+            backgroundColor: "#ffffff",
           }}
         >
-          <h4 style={{textAlign: "center"}}>Total Coffees</h4>
-          <h1>{totalNumber}</h1>
+          <div style={{textAlign: "center", width: "50px", height: "50px", borderRadius: "50%", display: "flex", justifyContent: "center",backgroundColor: "#9fdfff", alignItems: "center"}}>
+          <MilitaryTechIcon style={{fontSize: "30px", color: "#2e1a1a"} }/>
+          </div>
+          <div><h3 style={{fontSize: "22px"}}>{mostPopular[0]?.name}</h3> 
+          <p style={{fontSize: "12px",color: "grey"}}>{"Most popular ( "+mostPopular[0]?.popularity+" ordered )"}</p>
+          </div>
         </Box>
         <Box
           className="top"
           style={{
             height: "120px",
-            width: "200px",
+            width: "50%",
             border: "1px solid white",
             padding: "5px",
             borderRadius: "3px",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            alignItems: "center"
+            justifyContent: "center",
+            gap: "20px",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
+            color:"black"
           }}
         >
-          <div>
-          <h4 style={{textAlign: "center",}}>Busiest Date</h4>
+          <div style={{textAlign: "center", width: "50px", height: "50px", borderRadius: "50%", display: "flex", justifyContent: "center",backgroundColor: "#9fdfff", alignItems: "center"}}>
+          <BarChartIcon style={{fontSize: "30px", color: "#2e1a1a"}}/>
           </div>
-          
-          <h2>Who knows</h2>
+          <div>
+          <h3 style={ {fontSize: "22px"}}>{totalNumber}</h3>
+          <p style={{textAlign: "center", color: "grey", fontSize: "12px"}}>Total coffees ordered</p>
+          </div>
+
         </Box>
       </Box>
 
-      <Box className="bottom" style={{ display: "flex", gap: "10px" }}>
+      <Box className="bottomContainer" style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <Box
-          className="left"
-          style={{ border: "1px solid white", width: "60%" }}
+          className="dataContainer"
+          style={{ border: "1px solid white", width: "100%" }}
         >
           <DailyDataLineChart
             xData={xData}
@@ -242,18 +235,24 @@ export default function StatisticPage() {
           />
         </Box>
         <Box
-          className="right"
-          style={{ border: "1px solid white", width: "60%" }}
+          className="dataContainer"
+          style={{ border: "1px solid white", width: "100%" }}
         >
           <MilkPieChart data={milkData}></MilkPieChart>
         </Box>
 
       </Box>
-              {milkData.map((milk) => (
-          <div key={milk.id}>
+      <Button variant= "contained" onClick= {() => setMilkDetail(!milkDetail)}>Show Milk Details</Button>
+      
+    {milkDetail &&
+    <Box style= {{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "flex-start", alignItems: "center", width: "100%", backgroundColor: "#ffffff", padding: "10px", borderRadius: "3px", border: "1px solid white"}}>
+          {milkData.map((milk) => (
+          <div style={{ color: "black", borderRadius: "3px"}} key={milk.id}>
             {milk.label}: {milk.value}
           </div>
         ))}
+      </Box>
+}
     </Box>
   );
 }

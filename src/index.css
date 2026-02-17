@@ -125,5 +125,12 @@ ul, ol {
 }
 
 #root::-webkit-scrollbar {
-  display: none;
+  width: 0px;
+  height: 0px;
+}
+.dataContainer {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  color: black;
 }
