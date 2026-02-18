@@ -8,6 +8,7 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import QueueList from "../QueueList";
 
+
 export default function SideBar() {
   const menuItemStyles = {
     root: {
@@ -51,6 +52,10 @@ export default function SideBar() {
 
         <MenuItem rootStyles={menuItemStyles.root} icon={<BarChartIcon />} component={ <Link to = "/statistic" />}>
         Statistic
+        </MenuItem>
+
+        <MenuItem rootStyles={menuItemStyles.root} icon={<BarChartIcon />} component={ <Link to = "/news" />}>
+        News
         </MenuItem>
 
         <MenuItem rootStyles={menuItemStyles.root} icon={<BugReportIcon />} component={ <Link to = "/bugreport" />}>
