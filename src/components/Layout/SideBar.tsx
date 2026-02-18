@@ -5,6 +5,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import AnnouncementIcon from '@mui/icons-material/Announcement';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import QueueList from "../QueueList";
 
@@ -54,7 +55,7 @@ export default function SideBar() {
         Statistic
         </MenuItem>
 
-        <MenuItem rootStyles={menuItemStyles.root} icon={<BarChartIcon />} component={ <Link to = "/news" />}>
+        <MenuItem rootStyles={menuItemStyles.root} icon={<AnnouncementIcon />} component={ <Link to = "/news" />}>
         News
         </MenuItem>
 
