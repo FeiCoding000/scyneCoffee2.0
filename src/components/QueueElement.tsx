@@ -1,6 +1,6 @@
 import type { Order } from "../types/order";
-import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
-import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
+import HourglassFullIcon from '@mui/icons-material/HourglassFull';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 export default function QueueElement({ order}: { order: Order}) {
   return (
     <div className="queue-element">
@@ -9,7 +9,7 @@ export default function QueueElement({ order}: { order: Order}) {
           {order.customerName}
         </div>
         <div>
-            {order.isCompleted? <EmojiEmotionsIcon style={{ color: "green" }} /> : <SentimentSatisfiedIcon style={{ color: "orange" }} /> }
+            {order.isCompleted? <CheckCircleIcon style={{ color: "green" }} /> : <HourglassFullIcon style={{ color: "blue" }} /> }
         </div>
          
       </div>
