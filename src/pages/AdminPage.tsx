@@ -15,6 +15,7 @@ import {
   DialogContent,
 } from "@mui/material";
 import CreateCoffeeForm from "../components/forms/CreateCoffeeForm";
+import CreateNotification from "../components/CreateNotification";
 
 export default function AdminPage() {
   const [fetchedList, setFetchedList] = useState<Coffee[]>([]);
@@ -47,7 +48,6 @@ export default function AdminPage() {
         alignItems="center"
         sx={{ mb: 3 }}
       >
-        <Typography variant="h5">Menu management</Typography>
         <Button
           variant="contained"
           color="primary"
@@ -55,6 +55,7 @@ export default function AdminPage() {
         >
           Add Coffee
         </Button>
+        <CreateNotification />
       </Stack>
 
       {/* Coffee List */}

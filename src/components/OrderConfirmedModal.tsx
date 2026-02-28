@@ -1,6 +1,7 @@
 import { getDocs, collection, query, where } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../services/firebase";
+import { useNoti } from "../contexts/NotiContext";
 import {
   Modal,
   Box,
@@ -21,6 +22,7 @@ export default function OrderConfirmedModal({
   const [pendingOrders, setPendingOrders] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
+  const { isNotiOpen, notification, toggleNoti } = useNoti();
 
   useEffect(() => {
     if (!open) return;
@@ -48,6 +50,9 @@ export default function OrderConfirmedModal({
     setTimeout(() => {
       setIsClosing(false);
       onClose();
+      if (notification?.isActive && isNotiOpen === false && toggleNoti) {
+          toggleNoti();
+        }
     }, 1000);
   };
 

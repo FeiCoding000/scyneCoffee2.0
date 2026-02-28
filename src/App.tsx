@@ -22,16 +22,12 @@ function App() {
                     <Route path="/statistic" element={ <StatisticPage/>} />
                     <Route path="/bugreport" element={ <BugReportPage/>} />
                     <Route path="/news" element={ <News/>} />
-
                 </Route>
 
                 <Route path="/" element={<HomePage/>} />
                 <Route path="/login" element={<LoginPage />} />
             </Routes>
         </Router>
-
-
-
     );
 }
 

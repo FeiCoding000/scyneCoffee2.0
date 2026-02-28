@@ -1,7 +1,13 @@
 import NavBar from "./NavBar";
 import SideBar from "./SideBar";
 import { Outlet } from "react-router-dom";
+import Notification from "../Notification";
+import { useNoti } from "../../contexts/NotiContext";
+
 export default function Layout() {
+
+  const { notification, isNotiOpen, toggleNoti } = useNoti();
+
   return (
     <div
       style={{
@@ -11,21 +17,21 @@ export default function Layout() {
         color: "white",
       }}
     >
-      <nav 
+      <nav
         style={{
           position: "fixed",
           top: 0,
           width: "100%",
-          height:"40px",
+          height: "40px",
           zIndex: 1000,
           backgroundColor: "#464e7e",
           display: "flex",
-          flexDirection:"row"
+          flexDirection: "row",
         }}
       >
         <div
           style={{
-            maxWidth: "1600px",  
+            maxWidth: "1600px",
             width: "100%",
             margin: "0 auto",
             display: "flex",
@@ -44,26 +50,29 @@ export default function Layout() {
           margin: "0 auto",
           display: "flex",
           flexDirection: "row",
-          marginTop: "60px", 
+          marginTop: "60px",
           padding: "0 16px",
-          position: "relative"
+          position: "relative",
         }}
       >
-        <aside className="layout-aside"
+        <aside
+          className="layout-aside"
           style={{
             position: "fixed",
             top: "40px",
-            height:"100%",
-            marginLeft:"-20px"
+            height: "100%",
+            marginLeft: "-20px",
           }}
         >
           <SideBar />
         </aside>
 
-        <main style={{ flex: 1, marginLeft:"160px", marginTop:"40px" }}>
+        <main style={{ flex: 1, marginLeft: "160px", marginTop: "40px" }}>
           <Outlet />
         </main>
       </div>
+        {isNotiOpen && notification && toggleNoti && <Notification notification={notification} toggleNoti={toggleNoti} />}
     </div>
+
   );
 }
