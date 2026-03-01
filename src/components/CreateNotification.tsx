@@ -7,20 +7,18 @@ export default function CreateNotification() {
     try {
       const notificationsCol = collection(db, "notifications");
 
-      // 1️⃣ 查询所有旧通知
       const snapshot = await getDocs(notificationsCol);
       snapshot.docs.forEach(async (d) => {
         await deleteDoc(doc(db, "notifications", d.id));
       });
 
-      // 2️⃣ 创建新通知
       const docRef = await addDoc(notificationsCol, {
         type: "info",
         isActive: true,
         title: "Barista Away",
-        description: "You can still place order.",
+        description: "You can still place an order.",
         message: "Be back in",
-        timer: 320,
+        timer: 300,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
@@ -33,8 +31,7 @@ export default function CreateNotification() {
 
   return (
     <div>
-      Create
-      <Button onClick={handleCreate}>Notification</Button>
+      <Button variant= "contained" onClick={handleCreate}>Barista Away</Button>
     </div>
   );
 }

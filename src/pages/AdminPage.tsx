@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import CreateCoffeeForm from "../components/forms/CreateCoffeeForm";
 import CreateNotification from "../components/CreateNotification";
+import ClearNoti from "../components/ClearNoti";
 
 export default function AdminPage() {
   const [fetchedList, setFetchedList] = useState<Coffee[]>([]);
@@ -56,6 +57,7 @@ export default function AdminPage() {
           Add Coffee
         </Button>
         <CreateNotification />
+        <ClearNoti/>
       </Stack>
 
       {/* Coffee List */}

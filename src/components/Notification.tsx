@@ -1,13 +1,13 @@
 import type { Notification } from "../types/notification";
 import { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { Typography, Stack } from "@mui/material";
+import { Stack, Typography} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import CardActionArea from "@mui/material/CardActionArea";
 import Timer from "./Timer";
+import CardMedia from "@mui/material/CardMedia";
 
 export default function Notification({
   notification,
@@ -72,12 +72,13 @@ export default function Notification({
             position: "relative",
           }}
         >
-          <CardMedia
-            component="img"
-            width="800"
-            image="https://cdn.prod.website-files.com/6615ecd6dcd6b196af21aa2d/673d849cc11b966bd7ea66a2_Factsheet%20purple%20thumbnail.png"
-            title="Notification Image"
-            alt="scyne logo"
+          <CardMedia 
+          component="img"
+          image="https://puffy-cycle-c22.notion.site/image/attachment%3A1ff6d306-f5cd-48ce-b97d-cccb9584b514%3A31a5ef06-220d-4a59-9f91-52e0c6b5fdc6.png?table=block&id=316b0c76-04c3-80a5-b40c-dba1e19f5c3a&spaceId=a8b48907-9175-44e1-beb8-4578322d8a4c&width=1420&userId=&cache=v2"
+          width="400"
+          style={{
+            position: "relative"
+          }}
           />
           <Stack
             style={{
@@ -94,6 +95,8 @@ export default function Notification({
               {notification.description}
             </Typography>
           </Stack>
+            
+  
 
           <CardContent>
             <Typography
