@@ -12,6 +12,7 @@ export default function HomePage() {
       <div
         style={{
           minHeight: "90vh",
+          width:"500px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -22,9 +23,19 @@ export default function HomePage() {
           Welcome, start your order now!
         </h1>
         {user ? (
-          <Button variant="contained" onClick={() => navigate("/menu")}>
-            Start
-          </Button>
+          <div style = {
+            {
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              width: "100%"
+            }
+          }>
+            <Button variant="contained" onClick={() => navigate("/menu")} style={{width: "100%"}}>
+              Classic Order
+            </Button>
+            <Button variant="contained" onClick={() => navigate("/profile-order")}>Profile Order</Button>
+          </div>
         ) : (
           <Button variant="contained" onClick={() => navigate("/login")}>
             Login
