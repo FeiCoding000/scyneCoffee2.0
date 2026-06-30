@@ -2,13 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addCustomer,
   getAllCustomersFromFirestore,
-  type NewCustomer,
 } from "../../services/customerService";
+import type { CreateCustomerDto } from "../../schemas/dto/createCustomerDto";
+import type { CustomerEntity } from "../../schemas/entity/customerEntity";
 import type { ApiError } from "../../types/api";
-import type { Customer } from "../../types/profile";
 
 type CustomerState = {
-  customers: Customer[];
+  customers: CustomerEntity[];
   loading: boolean;
   error: ApiError | null;
 };
@@ -20,7 +20,7 @@ const initialState: CustomerState = {
 };
 
 export const getCustomers = createAsyncThunk<
-  Customer[],
+  CustomerEntity[],
   void,
   { rejectValue: ApiError }
 >("customers/getCustomers", async (_, { rejectWithValue }) => {
@@ -34,8 +34,8 @@ export const getCustomers = createAsyncThunk<
 });
 
 export const createCustomer = createAsyncThunk<
-  Customer,
-  NewCustomer,
+  CustomerEntity,
+  CreateCustomerDto,
   { rejectValue: ApiError }
 >("customers/createCustomer", async (customer, { rejectWithValue }) => {
   const result = await addCustomer(customer);

@@ -17,6 +17,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@hookform/resolvers": "^5.4.0",
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@mui/x-charts": "^8.16.0",
@@ -26,11 +27,12 @@
     "firebase": "^12.3.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-hook-form": "^7.65.0",
+    "react-hook-form": "^7.80.0",
     "react-pro-sidebar": "^1.1.0",
     "react-redux": "^9.3.0",
     "react-router-dom": "^7.9.3",
-    "zod": "^4.1.11"
+    "swr": "^2.4.2",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.3",

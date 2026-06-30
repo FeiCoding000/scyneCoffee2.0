@@ -1,14 +1,15 @@
 import { FirebaseError } from "firebase/app";
 import { db } from "./firebase";
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import type { Customer } from "../types/profile";
-import { customerSchema } from "../types/profile";
+import { collection, addDoc, getDocs, Timestamp } from "firebase/firestore";
+import { customerEntitySchema } from "../schemas/entity/customerEntity";
 import type { ApiError, ApiResult } from "../types/api";
 import { apiFailure, apiSuccess } from "../types/api";
+import {type CustomerEntity } from "../schemas/entity/customerEntity";
+import { createCustomerDtoSchema, type CreateCustomerDto } from "../schemas/dto/createCustomerDto";
 
-const customersCollection = "users";
+const customersCollection = "customer";
 
-export type NewCustomer = Omit<Customer, "id">;
+export type NewCustomer = Omit<CustomerEntity, "id">;
 
 const toApiError = (error: unknown, fallbackMessage: string): ApiError => {
   if (error instanceof FirebaseError) {
@@ -32,11 +33,11 @@ const toApiError = (error: unknown, fallbackMessage: string): ApiError => {
 };
 
 export const getAllCustomersFromFirestore = async (): Promise<
-  ApiResult<Customer[]>
+  ApiResult<CustomerEntity[]>
 > => {
   try {
     const querySnapshot = await getDocs(collection(db, customersCollection));
-    const customers: Customer[] = [];
+    const customers: CustomerEntity[] = [];
 
     for (const doc of querySnapshot.docs) {
       const rawData = {
@@ -44,7 +45,7 @@ export const getAllCustomersFromFirestore = async (): Promise<
         ...doc.data(),
       };
 
-      const result = customerSchema.safeParse(rawData);
+      const result = customerEntitySchema.safeParse(rawData);
 
       if (!result.success) {
         return apiFailure({
@@ -63,9 +64,9 @@ export const getAllCustomersFromFirestore = async (): Promise<
 };
 
 export const addCustomer = async (
-  customer: NewCustomer
-): Promise<ApiResult<Customer>> => {
-  const parsedCustomer = customerSchema.omit({ id: true }).safeParse(customer);
+  customer: CreateCustomerDto
+): Promise<ApiResult<CustomerEntity>> => {
+  const parsedCustomer = createCustomerDtoSchema.safeParse(customer);
 
   if (!parsedCustomer.success) {
     return apiFailure({
@@ -74,14 +75,16 @@ export const addCustomer = async (
     });
   }
 
+  const newCustomer: NewCustomer = {...parsedCustomer.data, createdAt: Timestamp.now(), updatedAt: Timestamp.now(), totalDrinksOrdered: 0 }
+
   try {
     const collectionRef = collection(db, customersCollection);
-    const docRef = await addDoc(collectionRef, parsedCustomer.data);
+    const docRef = await addDoc(collectionRef, newCustomer);
 
     return apiSuccess(
       {
         id: docRef.id,
-        ...parsedCustomer.data,
+        ...newCustomer,
       },
       "Customer added successfully."
     );

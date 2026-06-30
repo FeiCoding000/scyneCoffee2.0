@@ -10,6 +10,7 @@ import BugReportPage from "./pages/BugReportPage";
 import News from "./pages/News";
 import './index.css';
 import ProfileOrderPage from "./pages/ProfileOrderPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
     return (
@@ -28,6 +29,9 @@ function App() {
                 <Route path="/" element={<HomePage/>} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/profile-order" element={<ProfileOrderPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+
+
             </Routes>
         </Router>
     );
