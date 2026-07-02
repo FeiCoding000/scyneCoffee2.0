@@ -1,8 +1,9 @@
-import { Button, TextField, Typography, Link, List, ListItem } from "@mui/material";
+import { Button, TextField, Typography, List, ListItem } from "@mui/material";
 import { useState, type ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileOrderPage() {
-
+  const navgate = useNavigate();
   const [filteredNameList, setFilteredNameList] = useState<string[]>([]);
   const mockedList = ['Yafei','Aorui','Muzi','Dora','Hammer','Yeye','Laoye','lAOLAO' ];
 
@@ -48,7 +49,7 @@ export default function ProfileOrderPage() {
       </div>
       <div style={{ display: "flex", flexDirection: "row", alignItems:"center", gap: "10px"}}>
         <Typography variant="subtitle2" >Can't find your name? </Typography>
-        <Link href= "/profile" color="warning" > Add your profile.</Link>
+        <Button onClick={() => navgate("/profile")} color="warning" > Add your profile.</Button>
       </div>
     </div>
   );
