@@ -4,6 +4,7 @@ import { z } from "zod";
 export const createCustomerDtoSchema = z.object({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
+    allergies: z.array(z.string()).default([]),
     options: z.array(createOrderItemDtoSchema).min(1)
 })
 

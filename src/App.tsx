@@ -1,4 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import Layout from "./components/Layout/Layout";
 import OrderPage from "./pages/OrderPage";
@@ -8,33 +12,33 @@ import MenuPage from "./pages/MenuPage";
 import StatisticPage from "./pages/StatisticPage";
 import BugReportPage from "./pages/BugReportPage";
 import News from "./pages/News";
-import './index.css';
-import ProfileOrderPage from "./pages/ProfileOrderPage";
+import "./index.css";
 import ProfilePage from "./pages/ProfilePage";
+import CreateProfilePage from "./pages/CreateProfilePage";
+import ProfileOrderPage from "./pages/ProfileOrderPage";
 
 function App() {
-    return (
-        <Router basename="/scyneCoffee2.0">
-        {/* <Router > */}
-            <Routes>
-                <Route element={<Layout/>}>
-                    <Route path="/orders" element={ <OrderPage/>} />
-                    <Route path="/admin" element={ <AdminPage/>} />
-                    <Route path="/menu" element={ <MenuPage/>} />
-                    <Route path="/statistic" element={ <StatisticPage/>} />
-                    <Route path="/bugreport" element={ <BugReportPage/>} />
-                    <Route path="/news" element={ <News/>} />
-                </Route>
+  return (
+    <Router basename="/scyneCoffee2.0">
+      {/* <Router > */}
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/orders" element={<OrderPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/menu" element={<MenuPage />} />
+          <Route path="/statistic" element={<StatisticPage />} />
+          <Route path="/bugreport" element={<BugReportPage />} />
+          <Route path="/news" element={<News />} />
+        </Route>
 
-                <Route path="/" element={<HomePage/>} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/profile-order" element={<ProfileOrderPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-
-
-            </Routes>
-        </Router>
-    );
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/profile/:id" element={<ProfilePage />} />
+        <Route path="/create-profile" element={<CreateProfilePage />} />
+        <Route path="/profile-order" element={<ProfileOrderPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
