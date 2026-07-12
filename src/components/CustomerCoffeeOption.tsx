@@ -297,6 +297,7 @@ const teaBagOptions = [1, 2, 3];
 const createDefaultOption = (index: number): CreateOrderItemDto => ({
   reference: `Option${index}`,
   title: drinkOptions[0].drinkName,
+  category: drinkOptions[0].category,
   isXHot: false,
   isIced: false,
   isDecaf: false,
@@ -350,7 +351,7 @@ export default function CustomerCoffeeOption({
   };
 
   const handleSubmit = () => {
-    handleAddOption(coffeeOption);
+    handleAddOption({...coffeeOption, category: selectedDrinkResult?.category || "other"});
     setCoffeeOption(createDefaultOption(index + 1));
     onClose();
   };

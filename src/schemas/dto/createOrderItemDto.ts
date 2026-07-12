@@ -3,6 +3,7 @@ import { z } from "zod";
 export const createOrderItemDtoSchema = z.object({
     reference: z.string().min(1),
     title: z.string(),
+    category: z.enum(["coffee", "tea", "other"]),
     isIced: z.boolean().default(false),
     isXHot: z.boolean(),
     isDecaf: z.boolean().default(false),
