@@ -8,12 +8,18 @@ import {
   query,
   where,
   limit,
+  doc,
+  getDoc,
+  updateDoc,
+  increment,
 } from "firebase/firestore";
 import { customerEntitySchema } from "../schemas/entity/customerEntity";
 import type { ApiError, ApiResult } from "../types/api";
 import { apiFailure, apiSuccess } from "../types/api";
 import { type CustomerEntity } from "../schemas/entity/customerEntity";
 import { createCustomerDtoSchema, type CreateCustomerDto } from "../schemas/dto/createCustomerDto";
+import type { Order } from "../types/order";
+import type { OrderItemEntity } from "../schemas/entity/customerOrderItemEntity";
 
 const customersCollection = "customer";
 
@@ -71,6 +77,124 @@ export const getAllCustomersFromFirestore = async (): Promise<
   }
 };
 
+export const getCustomerById = async (
+  customerId: string
+): Promise<ApiResult<CustomerEntity>> => {
+  try {
+    const customerDoc = await getDoc(doc(db, customersCollection, customerId));
+
+    if (!customerDoc.exists()) {
+      return apiFailure({
+        code: "customer-not-found",
+        message: "Customer not found.",
+      });
+    }
+
+    const result = customerEntitySchema.safeParse({
+      id: customerDoc.id,
+      ...customerDoc.data(),
+    });
+
+    if (!result.success) {
+      return apiFailure({
+        code: "invalid-customer-data",
+        message: `Customer data is invalid. Document id: ${customerId}`,
+      });
+    }
+
+    return apiSuccess(result.data);
+  } catch (error) {
+    return apiFailure(toApiError(error, "Failed to fetch customer."));
+  }
+};
+
+export const updateCustomerOptions = async (
+  customer: CustomerEntity,
+  options: OrderItemEntity[]
+): Promise<ApiResult<CustomerEntity>> => {
+  if (!customer.id) {
+    return apiFailure({
+      code: "missing-customer-id",
+      message: "Customer id is required to update profile.",
+    });
+  }
+
+  try {
+    const now = Timestamp.now();
+    const updatedCustomer = customerEntitySchema.parse({
+      ...customer,
+      options,
+      updatedAt: now,
+    });
+
+    await updateDoc(doc(db, customersCollection, customer.id), {
+      options,
+      updatedAt: now,
+    });
+
+    return apiSuccess(updatedCustomer, "Customer profile updated successfully.");
+  } catch (error) {
+    return apiFailure(toApiError(error, "Failed to update customer profile."));
+  }
+};
+
+export const placeProfileOrder = async (
+  customer: CustomerEntity,
+  option: OrderItemEntity
+): Promise<ApiResult<CustomerEntity>> => {
+  if (!customer.id) {
+    return apiFailure({
+      code: "missing-customer-id",
+      message: "Customer id is required to place profile order.",
+    });
+  }
+
+  try {
+    const now = Timestamp.now();
+    const order: Order = {
+      customerName: `${customer.firstName} ${customer.lastName}`.trim(),
+      items: [
+        {
+          title: option.title,
+          isIced: option.isIced,
+          isDecaf: option.isDecaf,
+          strength: option.strength,
+          quantity: 1,
+          milk: option.milk,
+          isXHot: option.isXHot,
+          teaBags: option.teaBags,
+          sugar: option.sugar,
+          sweetner: option.sweetner,
+          extraWater: option.teaBags > 0 ? 500 : 0,
+          isHot: !option.isIced,
+          isCompleted: false,
+        },
+      ],
+      isCompleted: false,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    await addDoc(collection(db, "orders"), order);
+
+    const customerRef = doc(db, customersCollection, customer.id);
+    await updateDoc(customerRef, {
+      totalDrinksOrdered: increment(1),
+      updatedAt: now,
+    });
+
+    const updatedCustomer: CustomerEntity = {
+      ...customer,
+      totalDrinksOrdered: customer.totalDrinksOrdered + 1,
+      updatedAt: now,
+    };
+
+    return apiSuccess(updatedCustomer, "Order placed successfully.");
+  } catch (error) {
+    return apiFailure(toApiError(error, "Failed to place order."));
+  }
+};
+
 export const addCustomer = async (
   customer: CreateCustomerDto
 ): Promise<ApiResult<CustomerEntity>> => {
@@ -106,7 +230,6 @@ export const addCustomer = async (
     const newCustomer: NewCustomer = {
       ...customerData,
       normalizedName,
-      allergies: [],
       createdAt: now,
       updatedAt: now,
       totalDrinksOrdered: 0,
