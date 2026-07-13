@@ -41,9 +41,7 @@ export default function HomePage() {
             filter: "brightness(0) invert(1)",
           }}
         />
-        <Typography variant="h3" sx={{ fontWeight: 500, mb: 1 }}>
-          Scyne Coffee
-        </Typography>
+
         <Typography sx={{ color: "rgba(255,255,255,0.72)", mb: 4 }}>
           Choose how you would like to place your order.
         </Typography>
@@ -71,7 +69,8 @@ export default function HomePage() {
                   Classic Order
                 </Typography>
                 <Typography sx={{ color: "rgba(255,255,255,0.7)", mb: 3 }}>
-                  Best for visitors or clients who want to order without a saved profile.
+                  Best for visitors or clients who want to order without a saved
+                  profile.
                 </Typography>
                 <Button
                   fullWidth
@@ -106,7 +105,8 @@ export default function HomePage() {
                   Profile Order
                 </Typography>
                 <Typography sx={{ color: "rgba(255,255,255,0.7)", mb: 3 }}>
-                  Best for staff with saved drink options and one-click ordering.
+                  Best for staff with saved drink options and one-click
+                  ordering.
                 </Typography>
                 <Button
                   fullWidth

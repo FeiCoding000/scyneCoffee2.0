@@ -82,7 +82,7 @@ export default function ProfileOptionsEditor({
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+        <Typography variant="h6">
           Edit saved options
         </Typography>
         <Stack direction="row" spacing={1}>
@@ -96,7 +96,6 @@ export default function ProfileOptionsEditor({
             sx={{
               backgroundColor: "#F2C078",
               color: "#2E244D",
-              fontWeight: 800,
               "&:hover": { backgroundColor: "#FFD49A" },
             }}
           >
@@ -128,10 +127,10 @@ export default function ProfileOptionsEditor({
                   <CoffeeIcon />
                 </Avatar>
                 <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 800 }}>
+                  <Typography variant="h6">
                     {option.reference}
                   </Typography>
-                  <Typography sx={{ fontWeight: 600 }}>{option.title}</Typography>
+                  <Typography>{option.title}</Typography>
                   <Typography variant="body2" sx={{ color: "rgba(46, 36, 77, 0.72)" }}>
                     {formatOptionSummary(option)}
                   </Typography>

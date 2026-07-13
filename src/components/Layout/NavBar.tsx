@@ -48,6 +48,34 @@ export default function NavBar() {
         <span>
           {/* Happy New Year! {disPlayName?.toUpperCase()} */}
         </span>
+        <Button
+          size="small"
+          onClick={() => navigate("/orders")}
+          sx={{
+            color: "white",
+            textTransform: "none",
+            fontWeight: "normal",
+            minWidth: "auto",
+            px: 1,
+            "&:hover": { backgroundColor: "rgba(255,255,255,0.12)" },
+          }}
+        >
+          Orders
+        </Button>
+        <Button
+          size="small"
+          onClick={() => navigate("/statistic")}
+          sx={{
+            color: "white",
+            textTransform: "none",
+            fontWeight: "normal",
+            minWidth: "auto",
+            px: 1,
+            "&:hover": { backgroundColor: "rgba(255,255,255,0.12)" },
+          }}
+        >
+          Statistic
+        </Button>
         <Cart />
         {/* <Button
           sx={{

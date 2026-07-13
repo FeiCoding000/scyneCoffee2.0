@@ -21,7 +21,10 @@ export default function RecentOrders({ variant = "plain" }: RecentOrdersProps) {
       unsubscribe?.();
 
       const orderRef = collection(db, "orders");
-      const activeOrdersQuery = query(orderRef, where("isCompleted", "==", false));
+      const activeOrdersQuery = query(
+        orderRef,
+        where("isCompleted", "==", false),
+      );
 
       unsubscribe = onSnapshot(activeOrdersQuery, (snapshot) => {
         const orders: Order[] = snapshot.docs
@@ -53,14 +56,21 @@ export default function RecentOrders({ variant = "plain" }: RecentOrdersProps) {
         p: isGlass ? 2 : 0,
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 1.5,
+        }}
+      >
         <Box>
-          <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
-            Recent Orders
-          </Typography>
+          <Typography sx={{ fontSize: 18 }}>Recent Orders</Typography>
           <Typography
             variant="caption"
-            sx={{ color: isGlass ? "rgba(255,255,255,0.62)" : "text.secondary" }}
+            sx={{
+              color: isGlass ? "rgba(255,255,255,0.62)" : "text.secondary",
+            }}
           >
             Live active queue
           </Typography>
@@ -74,18 +84,26 @@ export default function RecentOrders({ variant = "plain" }: RecentOrdersProps) {
               ? "rgba(242, 192, 120, 0.18)"
               : "rgba(242, 192, 120, 0.28)",
             border: "1px solid rgba(242, 192, 120, 0.5)",
-            fontWeight: 500,
           }}
         />
       </Box>
 
       {loading ? (
         <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
-          <CircularProgress size={22} sx={{ color: isGlass ? "#F2C078" : undefined }} />
+          <CircularProgress
+            size={22}
+            sx={{ color: isGlass ? "#F2C078" : undefined }}
+          />
         </Box>
       ) : recentOrders.length === 0 ? (
-        <Typography sx={{ textAlign: "left", mt: 2, color: isGlass ? "rgba(255,255,255,0.68)" : "grey" }}>
-          😺 No active orders — you're first in line!
+        <Typography
+          sx={{
+            textAlign: "left",
+            mt: 2,
+            color: isGlass ? "rgba(255,255,255,0.68)" : "grey",
+          }}
+        >
+          No active orders
         </Typography>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
@@ -106,11 +124,20 @@ export default function RecentOrders({ variant = "plain" }: RecentOrdersProps) {
                     ? "rgba(255,255,255,0.08)"
                     : "rgba(70, 78, 126, 0.06)",
                   border: `1px solid ${
-                    isGlass ? "rgba(255,255,255,0.12)" : "rgba(70, 78, 126, 0.1)"
+                    isGlass
+                      ? "rgba(255,255,255,0.12)"
+                      : "rgba(70, 78, 126, 0.1)"
                   }`,
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, minWidth: 0 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.25,
+                    minWidth: 0,
+                  }}
+                >
                   <Avatar
                     sx={{
                       width: 34,
@@ -118,21 +145,26 @@ export default function RecentOrders({ variant = "plain" }: RecentOrdersProps) {
                       bgcolor: order.isCompleted ? "#2e7d32" : "#F2C078",
                       color: order.isCompleted ? "white" : "#2E244D",
                       fontSize: 14,
-                      fontWeight: 900,
                     }}
                   >
                     {index + 1}
                   </Avatar>
                   <Box sx={{ minWidth: 0 }}>
-                    <Typography sx={{ fontWeight: 600, lineHeight: 1.2 }} noWrap>
+                    <Typography sx={{ lineHeight: 1.2 }} noWrap>
                       {order.customerName}
                     </Typography>
                     <Typography
                       variant="caption"
-                      sx={{ color: isGlass ? "rgba(255,255,255,0.62)" : "text.secondary" }}
+                      sx={{
+                        color: isGlass
+                          ? "rgba(255,255,255,0.62)"
+                          : "text.secondary",
+                      }}
                       noWrap
                     >
-                      {firstItem ? `${firstItem.title} × ${firstItem.quantity}` : "Order item"}
+                      {firstItem
+                        ? `${firstItem.title} × ${firstItem.quantity}`
+                        : "Order item"}
                     </Typography>
                   </Box>
                 </Box>
@@ -149,7 +181,6 @@ export default function RecentOrders({ variant = "plain" }: RecentOrdersProps) {
                   label="Making"
                   sx={{
                     flexShrink: 0,
-                    fontWeight: 500,
                     color: "#6A4200",
                     backgroundColor: "#FFF1C7",
                     border: "1px solid #F4C95D",

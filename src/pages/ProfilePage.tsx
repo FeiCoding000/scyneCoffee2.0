@@ -295,13 +295,12 @@ export default function ProfilePage() {
               bgcolor: "#F2C078",
               color: "#2E244D",
               fontSize: 28,
-              fontWeight: 800,
             }}
           >
             {getInitials(customer.firstName, customer.lastName)}
           </Avatar>
           <Box>
-            <Typography variant="h4" sx={{ fontWeight: 800 }}>
+            <Typography variant="h4">
               {customerName}
             </Typography>
             <Typography sx={{ color: "rgba(255,255,255,0.72)" }}>
@@ -341,7 +340,7 @@ export default function ProfilePage() {
           />
         ) : (
           <>
-            <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
               Saved options
             </Typography>
 
@@ -369,10 +368,10 @@ export default function ProfilePage() {
                         <CoffeeIcon />
                       </Avatar>
                       <Box>
-                        <Typography variant="h6" sx={{ fontWeight: 800 }}>
+                        <Typography variant="h6">
                           {option.reference}
                         </Typography>
-                        <Typography sx={{ fontWeight: 600 }}>{option.title}</Typography>
+                        <Typography>{option.title}</Typography>
                         <Typography variant="body2" sx={{ color: "rgba(46, 36, 77, 0.72)" }}>
                           {formatOptionSummary(option)}
                         </Typography>
@@ -388,7 +387,6 @@ export default function ProfilePage() {
                         borderRadius: "12px",
                         backgroundColor: "#F2C078",
                         color: "#2E244D",
-                        fontWeight: 800,
                         whiteSpace: "nowrap",
                         "&:hover": { backgroundColor: "#FFD49A" },
                       }}
@@ -417,7 +415,7 @@ export default function ProfilePage() {
           },
         }}
       >
-        <DialogTitle sx={{ fontWeight: 800, pb: 1 }}>
+        <DialogTitle sx={{ pb: 1 }}>
           Order placed successfully!
         </DialogTitle>
         <DialogContent>
@@ -443,7 +441,7 @@ export default function ProfilePage() {
                 justifyContent: "center",
               }}
             >
-              <Typography variant="h4" sx={{ fontWeight: 900 }}>
+              <Typography variant="h4">
                 {countdown}
               </Typography>
             </Box>
@@ -458,7 +456,6 @@ export default function ProfilePage() {
               borderRadius: "12px",
               borderColor: "#2E244D",
               color: "#2E244D",
-              fontWeight: 800,
             }}
           >
             Continue
@@ -471,7 +468,6 @@ export default function ProfilePage() {
               borderRadius: "12px",
               backgroundColor: "#F2C078",
               color: "#2E244D",
-              fontWeight: 800,
               "&:hover": { backgroundColor: "#FFD49A" },
             }}
           >

@@ -1,3 +1,4 @@
+import { Box, Chip, Typography } from "@mui/material";
 import type { Coffee } from "../types/coffee";
 
 export default function MenuItemCard(props: {
@@ -5,115 +6,106 @@ export default function MenuItemCard(props: {
   onSelect: (coffee: Coffee) => void;
   maxPopularity?: number;
 }) {
-  const { name, description, imageUrl, popularity, isAvailable, tags } =
-    props.coffee;
-  const onSelect = props.onSelect;
-  const coffeeItem = props.coffee;
+  const { name, imageUrl, popularity, isAvailable, tags } = props.coffee;
   const maxPopularity = props.maxPopularity || 1;
-  //original solution
-  // const raw = (popularity / maxPopularity) * 5;
-  //second solution
   const raw = (Math.sqrt(popularity) / Math.sqrt(maxPopularity)) * 5;
-  //third solution
-  // const diff = maxPopularity - popularity;
-  // const adjusted = Math.sqrt(diff) + popularity;
-  // const maxAdjusted = Math.sqrt(0) + maxPopularity; // = maxPopularity
-  // const raw = (adjusted / maxAdjusted) * 5;
-
   const starNumber = popularity > 0 ? Math.max(1, Math.ceil(raw)) : 0;
+
   return (
-    <div
-      style={{
-        margin: "5px",
-        padding: "5px",
-        cursor: "pointer",
-        display: "flex",
-        flexDirection: "column",
-      }}
+    <Box
       onClick={() => {
         if (isAvailable) {
-          onSelect(coffeeItem);
+          props.onSelect(props.coffee);
         } else {
           alert("This item is currently unavailable.");
         }
       }}
+      sx={{
+        height: "100%",
+        cursor: "pointer",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        borderRadius: "20px",
+        background: "rgba(255, 255, 255, 0.08)",
+        border: "1px solid rgba(255, 255, 255, 0.18)",
+        boxShadow: "0 16px 40px rgba(0, 0, 0, 0.18)",
+        backdropFilter: "blur(10px)",
+        transition: "transform 160ms ease, border-color 160ms ease, background 160ms ease",
+        opacity: isAvailable ? 1 : 0.62,
+        "&:hover": {
+          transform: isAvailable ? "translateY(-3px)" : "none",
+          borderColor: isAvailable ? "#F2C078" : "rgba(255, 255, 255, 0.18)",
+          background: isAvailable ? "rgba(255, 255, 255, 0.12)" : "rgba(255, 255, 255, 0.08)",
+        },
+      }}
     >
-      <div style={{ position: "relative" }}>
-        {!props.coffee.isAvailable && (
-          <div
-            style={{
+      <Box sx={{ position: "relative" }}>
+        {!isAvailable && (
+          <Chip
+            label="Unavailable"
+            size="small"
+            sx={{
               position: "absolute",
-              right: "3px",
-              top: "3px",
+              right: 10,
+              top: 10,
+              zIndex: 2,
               color: "white",
-              border: "1px white solid",
-              padding: "1px",
-              borderRadius: "3px",
-              backgroundColor: "rgba(0,0,0, 0.5)",
+              backgroundColor: "rgba(0, 0, 0, 0.58)",
+              border: "1px solid rgba(255,255,255,0.7)",
             }}
-          >
-            Unavailable
-          </div>
+          />
         )}
-        <img
+        <Box
+          component="img"
           src={imageUrl}
           alt={name}
-          style={{
+          sx={{
             width: "100%",
-            height: "200px",
-            zIndex: "1",
+            height: 190,
+            display: "block",
             objectFit: "cover",
           }}
         />
-      </div>
-      <div>
-        <h2
-          style={{
-            fontFamily: "monospace",
-            marginBottom: "4px",
-            fontSize: "22px",
-          }}
-        >
+      </Box>
+
+      <Box sx={{ p: 2, display: "flex", flexDirection: "column", flex: 1 }}>
+        <Typography variant="h6" sx={{ mb: 1 }}>
           {name}
-        </h2>
-        <div
-          style={{
+        </Typography>
+
+        <Box
+          sx={{
             display: "flex",
             justifyContent: "space-between",
-            marginBottom: "3px",
+            alignItems: "center",
+            gap: 1,
+            mb: 2,
           }}
         >
-          <p>Popularity: </p>
-          <p>{"★".repeat(starNumber) + "☆".repeat(5 - starNumber)}</p>
-        </div>
+          <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.82)" }}>
+            Popularity:
+          </Typography>
+          <Typography variant="body2" sx={{ color: "#F2C078", letterSpacing: 0.5 }}>
+            {"★".repeat(starNumber) + "☆".repeat(5 - starNumber)}
+          </Typography>
+        </Box>
 
-        <p
-          style={{
-            textAlign: "justify",
-            marginBottom: "5px",
-            fontSize: "13px",
-          }}
-        >
-          {description}
-        </p>
-      </div>
-      <div style={{ marginTop: "auto", fontSize: "12px" }}>
-        {tags &&
-          tags.length > 0 &&
-          tags.slice(0, 2).map((tag, index) => (
-            <span
-              key={index}
-              style={{
-                border: "1px solid #ffffffff",
-                padding: "2px 5px",
-                borderRadius: "5px",
-                marginRight: "5px",
+        <Box sx={{ mt: "auto", display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+          {tags?.slice(0, 2).map((tag, index) => (
+            <Chip
+              key={`${tag}-${index}`}
+              label={tag}
+              size="small"
+              sx={{
+                color: "white",
+                border: "1px solid rgba(255, 255, 255, 0.65)",
+                backgroundColor: "rgba(255, 255, 255, 0.08)",
               }}
-            >
-              {tag}
-            </span>
+            />
           ))}
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }

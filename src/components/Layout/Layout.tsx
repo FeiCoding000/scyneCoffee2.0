@@ -1,5 +1,4 @@
 import NavBar from "./NavBar";
-import SideBar from "./SideBar";
 import { Outlet } from "react-router-dom";
 import Notification from "../Notification";
 import { useNoti } from "../../contexts/NotiContext";
@@ -55,19 +54,7 @@ export default function Layout() {
           position: "relative",
         }}
       >
-        <aside
-          className="layout-aside"
-          style={{
-            position: "fixed",
-            top: "40px",
-            height: "100%",
-            marginLeft: "-20px",
-          }}
-        >
-          <SideBar />
-        </aside>
-
-        <main style={{ flex: 1, marginLeft: "160px", marginTop: "40px" }}>
+        <main style={{ flex: 1, marginTop: "40px" }}>
           <Outlet />
         </main>
       </div>
