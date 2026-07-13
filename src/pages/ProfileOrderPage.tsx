@@ -177,7 +177,7 @@ export default function ProfilePage() {
         }}
       >
 
-      <Typography variant="h5" sx={{ fontWeight: 700 }}>
+      <Typography variant="h5">
         Find Your Profile
       </Typography>
 
@@ -231,7 +231,6 @@ export default function ProfilePage() {
           onClick={() => navigate("/create-profile")}
           sx={{
             color: "#F2C078",
-            fontWeight: 700,
             textTransform: "none",
             px: 0,
             "&:hover": {
