@@ -18,6 +18,7 @@ import {
 import CoffeeIcon from "@mui/icons-material/Coffee";
 import LocalCafeIcon from "@mui/icons-material/LocalCafe";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import HomeIcon from "@mui/icons-material/Home";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -247,13 +248,22 @@ export default function ProfilePage() {
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-          <Button
-            startIcon={<ArrowBackIcon />}
-            onClick={() => navigate("/profile-order")}
-            sx={{ color: "rgba(255,255,255,0.8)", textTransform: "none" }}
-          >
-            Back to search
-          </Button>
+          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+            <Button
+              startIcon={<ArrowBackIcon />}
+              onClick={() => navigate("/profile-order")}
+              sx={{ color: "rgba(255,255,255,0.8)", textTransform: "none" }}
+            >
+              Back to search
+            </Button>
+            <Button
+              startIcon={<HomeIcon />}
+              onClick={() => navigate("/")}
+              sx={{ color: "rgba(255,255,255,0.8)", textTransform: "none" }}
+            >
+              Home
+            </Button>
+          </Box>
           <IconButton
             onClick={(event) => setMenuAnchorEl(event.currentTarget)}
             sx={{ color: "rgba(255,255,255,0.86)" }}

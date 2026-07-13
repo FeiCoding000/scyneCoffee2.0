@@ -1,58 +1,162 @@
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Layout/Footer";
-import { Button } from "@mui/material";
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import LocalCafeIcon from "@mui/icons-material/LocalCafe";
+import BadgeIcon from "@mui/icons-material/Badge";
+import LoginIcon from "@mui/icons-material/Login";
 
 export default function HomePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
   return (
-    <div className="home-container">
-      <div
-        style={{
-          minHeight: "90vh",
-          width:"500px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+    <Box
+      className="home-container"
+      sx={{
+        minHeight: "100vh",
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        px: 2,
+        py: 8,
+      }}
+    >
+      <Box
+        sx={{
+          width: "min(720px, 100%)",
+          color: "white",
+          textAlign: "center",
         }}
       >
-        <h1 style={{ marginBottom: "20px", color: "white", padding: "10px" }}>
-          Welcome, start your order now!
-        </h1>
+        <Box
+          component="img"
+          src="https://cdn.prod.website-files.com/650aedb6397a7021a593e810/672ac5664163926064db6bd7_scyne-logo.svg"
+          alt="Scyne Logo"
+          sx={{
+            height: 48,
+            width: "auto",
+            mb: 2,
+            filter: "brightness(0) invert(1)",
+          }}
+        />
+        <Typography variant="h3" sx={{ fontWeight: 500, mb: 1 }}>
+          Scyne Coffee
+        </Typography>
+        <Typography sx={{ color: "rgba(255,255,255,0.72)", mb: 4 }}>
+          Choose how you would like to place your order.
+        </Typography>
+
         {user ? (
-          <div style = {
-            {
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-              width: "100%"
-            }
-          }>
-            <Button variant="contained" onClick={() => navigate("/menu")} style={{width: "100%"}}>
-              Classic Order
-            </Button>
-            <Button variant="contained" onClick={() => navigate("/profile-order")}>Profile Order</Button>
-          </div>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+              gap: 2,
+            }}
+          >
+            <Card
+              sx={{
+                borderRadius: "24px",
+                background: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.18)",
+                backdropFilter: "blur(10px)",
+                color: "white",
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <LocalCafeIcon sx={{ fontSize: 46, color: "#F2C078", mb: 1 }} />
+                <Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>
+                  Classic Order
+                </Typography>
+                <Typography sx={{ color: "rgba(255,255,255,0.7)", mb: 3 }}>
+                  Best for visitors or clients who want to order without a saved profile.
+                </Typography>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={() => navigate("/menu")}
+                  sx={{
+                    height: 46,
+                    borderRadius: "12px",
+                    backgroundColor: "#F2C078",
+                    color: "#2E244D",
+                    fontWeight: 500,
+                    "&:hover": { backgroundColor: "#FFD49A" },
+                  }}
+                >
+                  Start Classic Order
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card
+              sx={{
+                borderRadius: "24px",
+                background: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.18)",
+                backdropFilter: "blur(10px)",
+                color: "white",
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <BadgeIcon sx={{ fontSize: 46, color: "#F2C078", mb: 1 }} />
+                <Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>
+                  Profile Order
+                </Typography>
+                <Typography sx={{ color: "rgba(255,255,255,0.7)", mb: 3 }}>
+                  Best for staff with saved drink options and one-click ordering.
+                </Typography>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={() => navigate("/profile-order")}
+                  sx={{
+                    height: 46,
+                    borderRadius: "12px",
+                    backgroundColor: "#F2C078",
+                    color: "#2E244D",
+                    fontWeight: 500,
+                    "&:hover": { backgroundColor: "#FFD49A" },
+                  }}
+                >
+                  Find My Profile
+                </Button>
+              </CardContent>
+            </Card>
+          </Box>
         ) : (
-          <Button variant="contained" onClick={() => navigate("/login")}>
+          <Button
+            variant="contained"
+            startIcon={<LoginIcon />}
+            onClick={() => navigate("/login")}
+            sx={{
+              height: 48,
+              px: 4,
+              borderRadius: "12px",
+              backgroundColor: "#F2C078",
+              color: "#2E244D",
+              fontWeight: 500,
+              "&:hover": { backgroundColor: "#FFD49A" },
+            }}
+          >
             Login
           </Button>
         )}
-      </div>
+      </Box>
 
-      <footer
-        style={{
+      <Box
+        component="footer"
+        sx={{
           position: "fixed",
-          bottom: "0",
+          bottom: 0,
           height: "50px",
           width: "100%",
         }}
       >
         <Footer />
-      </footer>
-    </div>
+      </Box>
+    </Box>
   );
 }
