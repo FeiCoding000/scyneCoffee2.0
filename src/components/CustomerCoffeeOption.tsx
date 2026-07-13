@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { CreateOrderItemDto } from "../schemas/dto/createOrderItemDto";
 
 type OptionProps = {
@@ -16,6 +16,8 @@ type OptionProps = {
   isOpen: boolean;
   handleAddOption: (option: CreateOrderItemDto) => void;
   onClose: () => void;
+  initialOption?: CreateOrderItemDto | null;
+  submitLabel?: string;
 };
 
 type DrinkCategory = "coffee" | "tea" | "other";
@@ -313,10 +315,17 @@ export default function CustomerCoffeeOption({
   onClose,
   handleAddOption,
   index,
+  initialOption = null,
+  submitLabel = "Add option",
 }: OptionProps) {
   const [coffeeOption, setCoffeeOption] = useState<CreateOrderItemDto>(
-    createDefaultOption(index),
+    initialOption ?? createDefaultOption(index),
   );
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setCoffeeOption(initialOption ?? createDefaultOption(index));
+  }, [isOpen, initialOption, index]);
 
   const updateCoffeeOption = <K extends keyof CreateOrderItemDto>(
     key: K,
@@ -346,6 +355,12 @@ export default function CustomerCoffeeOption({
     setCoffeeOption((current) => ({
       ...current,
       title: drinkName,
+      category: drink?.category ?? "other",
+      milk: drink?.configuration.milk ? current.milk : "none",
+      strength: drink?.configuration.strength ? current.strength : 1,
+      teaBags: drink?.configuration.teaBags ? current.teaBags : 1,
+      isIced: drink?.configuration.iced ? current.isIced : false,
+      isXHot: drink?.configuration.extraHot ? current.isXHot : false,
       isDecaf: drink?.category === "coffee" ? current.isDecaf : false,
     }));
   };
@@ -446,7 +461,7 @@ export default function CustomerCoffeeOption({
           <>
             <p>Tea Bags:</p>
             <Select
-              value={coffeeOption.strength}
+              value={coffeeOption.teaBags}
               onChange={(e) =>
                 updateCoffeeOption("teaBags", Number(e.target.value))
               }
@@ -495,7 +510,7 @@ export default function CustomerCoffeeOption({
           />
         )}
         <Button variant="contained" onClick={handleSubmit}>
-          Add option
+          {submitLabel}
         </Button>
       </Box>
     </Modal>

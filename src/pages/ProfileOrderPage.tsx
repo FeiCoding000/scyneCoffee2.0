@@ -1,7 +1,40 @@
 import { Box, Button, TextField, Typography, List, ListItem } from "@mui/material";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Alert from '@mui/material/Alert';
+import { getAllCustomersFromFirestore } from "../services/customerService";
+import type { CustomerEntity } from "../schemas/entity/customerEntity";
+import RecentOrders from "../components/RecentOrders";
+
+type CustomerSearchItem = Pick<
+  CustomerEntity,
+  "id" | "firstName" | "lastName" | "normalizedName"
+>;
+
+const CUSTOMER_CACHE_KEY = "scyneCoffee.customers";
+
+const getCustomerName = (customer: CustomerSearchItem) =>
+  `${customer.firstName} ${customer.lastName}`.trim();
+
+const toSearchItem = (customer: CustomerEntity): CustomerSearchItem => ({
+  id: customer.id,
+  firstName: customer.firstName,
+  lastName: customer.lastName,
+  normalizedName: customer.normalizedName,
+});
+
+const readCachedCustomers = (): CustomerSearchItem[] => {
+  try {
+    const cachedCustomers = window.localStorage.getItem(CUSTOMER_CACHE_KEY);
+    return cachedCustomers ? JSON.parse(cachedCustomers) : [];
+  } catch {
+    return [];
+  }
+};
+
+const writeCachedCustomers = (customers: CustomerSearchItem[]) => {
+  window.localStorage.setItem(CUSTOMER_CACHE_KEY, JSON.stringify(customers));
+};
 
 const profileOrderTextFieldSx = {
   "& .MuiFilledInput-root": {
@@ -38,10 +71,58 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { data, error } = location.state || {};
+  const createdCustomer = data as CustomerEntity | undefined;
   const [showAlert, setShowAlert] = useState(true);
-  const [filteredNameList, setFilteredNameList] = useState<{ name: string; id: number }[]>([]);
-  const mockedList = [ { name: 'Yafei', id: 1 }, { name: 'Aorui', id: 2 }, { name: 'Muzi', id: 3 }, { name: 'Dora', id: 4 }, { name: 'Hammer', id: 5 }, { name: 'Yeye', id: 6 }, { name: 'Laoye', id: 7 }, { name: 'lAOLAO', id: 8 }];
+  const [customers, setCustomers] = useState<CustomerSearchItem[]>(readCachedCustomers);
+  const [searchValue, setSearchValue] = useState("");
 
+  const filteredNameList = useMemo(() => {
+    const value = searchValue.trim().toLowerCase();
+
+    if (!value) return [];
+
+    return customers.filter((customer) =>
+      getCustomerName(customer).toLowerCase().includes(value)
+    );
+  }, [customers, searchValue]);
+
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCustomers = async () => {
+      const result = await getAllCustomersFromFirestore();
+
+      if (!isMounted || !result.ok) return;
+
+      const customerList = result.data.map(toSearchItem);
+      setCustomers(customerList);
+      writeCachedCustomers(customerList);
+    };
+
+    loadCustomers();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!createdCustomer?.id) return;
+
+    const createdCustomerSearchItem = toSearchItem(createdCustomer);
+
+    setCustomers((currentCustomers) => {
+      const nextCustomers = [
+        createdCustomerSearchItem,
+        ...currentCustomers.filter(
+          (customer) => customer.id !== createdCustomerSearchItem.id
+        ),
+      ];
+      writeCachedCustomers(nextCustomers);
+      return nextCustomers;
+    });
+  }, [createdCustomer]);
 
   useEffect(() => {
     if (!data && !error) return;
@@ -57,13 +138,7 @@ export default function ProfilePage() {
   }, [data, error, navigate]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const value = e.target.value.toLowerCase();
-    if(!value){
-      setFilteredNameList([]);
-      return;
-    } 
-    const filteredList = mockedList.filter((item) => item.name.toLowerCase().includes(value));
-    setFilteredNameList(filteredList);
+    setSearchValue(e.target.value);
   }
 
   return (
@@ -134,7 +209,7 @@ export default function ProfilePage() {
             {filteredNameList.map((customer) => (
               <ListItem
                 key={customer.id}
-                onClick={() => navigate("/profile/" + customer.id)}
+                onClick={() => customer.id && navigate("/profile/" + customer.id)}
                 sx={{
                   cursor: "pointer",
                   "&:hover": {
@@ -142,7 +217,7 @@ export default function ProfilePage() {
                   },
                 }}
               >
-                {customer.name}
+                {getCustomerName(customer)}
               </ListItem>
             ))}
           </List>
@@ -169,6 +244,8 @@ export default function ProfilePage() {
           Add your profile.
         </Button>
       </Box>
+
+      <RecentOrders variant="glass" />
       </Box>
     </Box>
   );

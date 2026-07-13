@@ -2,6 +2,7 @@ import { z } from "zod";
 export const orderItemEntitySchema = z.object({
     reference: z.string().min(1),
     title: z.string(),
+    category: z.enum(["coffee", "tea", "other"]).default("coffee"),
     isXHot: z.boolean().default(false),
     isIced: z.boolean().default(false),
     isDecaf: z.boolean().default(false),
