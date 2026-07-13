@@ -245,7 +245,7 @@ export default function CreateProfilePage() {
             },
           }}
         >
-          Save
+          {isLoading ? "Saving..." : "Save"}
         </Button>
 
         <CustomerCoffeeOption
