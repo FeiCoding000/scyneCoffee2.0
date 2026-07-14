@@ -50,6 +50,20 @@ export default function NavBar() {
         </span>
         <Button
           size="small"
+          onClick={() => navigate("/")}
+          sx={{
+            color: "white",
+            textTransform: "none",
+            fontWeight: "normal",
+            minWidth: "auto",
+            px: 1,
+            "&:hover": { backgroundColor: "rgba(255,255,255,0.12)" },
+          }}
+        >
+          Home
+        </Button>
+        <Button
+          size="small"
           onClick={() => navigate("/orders")}
           sx={{
             color: "white",
