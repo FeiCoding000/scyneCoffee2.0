@@ -195,8 +195,26 @@ export const placeProfileOrder = async (
   }
 };
 
+export const checkCustomerExistsByNormalizedName = async (
+  normalizedName: string
+): Promise<ApiResult<boolean>> => {
+  try {
+    const duplicateQuery = query(
+      collection(db, customersCollection),
+      where("normalizedName", "==", normalizedName),
+      limit(1)
+    );
+    const duplicateSnapshot = await getDocs(duplicateQuery);
+
+    return apiSuccess(!duplicateSnapshot.empty);
+  } catch (error) {
+    return apiFailure(toApiError(error, "Failed to check customer name."));
+  }
+};
+
 export const addCustomer = async (
-  customer: CreateCustomerDto
+  customer: CreateCustomerDto,
+  options?: { skipDuplicateCheck?: boolean }
 ): Promise<ApiResult<CustomerEntity>> => {
   const parsedCustomer = createCustomerDtoSchema.safeParse(customer);
 
@@ -212,18 +230,20 @@ export const addCustomer = async (
 
   try {
     const collectionRef = collection(db, customersCollection);
-    const duplicateQuery = query(
-      collectionRef,
-      where("normalizedName", "==", normalizedName),
-      limit(1)
-    );
-    const duplicateSnapshot = await getDocs(duplicateQuery);
 
-    if (!duplicateSnapshot.empty) {
-      return apiFailure({
-        code: "duplicate-customer",
-        message: "A customer with the same name already exists.",
-      });
+    if (!options?.skipDuplicateCheck) {
+      const duplicateResult = await checkCustomerExistsByNormalizedName(normalizedName);
+
+      if (!duplicateResult.ok) {
+        return duplicateResult;
+      }
+
+      if (duplicateResult.data) {
+        return apiFailure({
+          code: "duplicate-customer",
+          message: "A customer with the same name already exists.",
+        });
+      }
     }
 
     const now = Timestamp.now();

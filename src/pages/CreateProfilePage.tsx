@@ -3,9 +3,11 @@ import {
   Autocomplete,
   Box,
   Button,
+  IconButton,
   TextField,
   Typography,
 } from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useEffect, useState } from "react";
 import CustomerCoffeeOption from "../components/CustomerCoffeeOption";
 import { useAddCustomer } from "../hooks/useAddCustomer";
@@ -13,6 +15,30 @@ import { useNavigate } from "react-router-dom";
 import type { CreateOrderItemDto } from "../schemas/dto/createOrderItemDto";
 import type { CreateCustomerDto } from "../schemas/dto/createCustomerDto";
 import CoffeeOptionItem from "../components/CoffeeOptionItem";
+import { checkCustomerExistsByNormalizedName } from "../services/customerService";
+
+type DuplicateCheckStatus = "idle" | "checking" | "available" | "duplicate" | "error";
+
+type CachedCustomerSearchItem = {
+  normalizedName?: string;
+};
+
+const CUSTOMER_CACHE_KEY = "scyneCoffee.customers";
+
+const normalizeCustomerName = (firstName: string, lastName: string) =>
+  `${firstName.trim().toLowerCase()} ${lastName.trim().toLowerCase()}`.trim();
+
+const isNameInLocalCache = (normalizedName: string) => {
+  try {
+    const cachedCustomers = window.localStorage.getItem(CUSTOMER_CACHE_KEY);
+    if (!cachedCustomers) return false;
+
+    const customers = JSON.parse(cachedCustomers) as CachedCustomerSearchItem[];
+    return customers.some((customer) => customer.normalizedName === normalizedName);
+  } catch {
+    return false;
+  }
+};
 
 const profileTextFieldSx = {
   "& .MuiOutlinedInput-root": {
@@ -71,6 +97,10 @@ export default function CreateProfilePage() {
   const { isLoading, error, addCustomerTrigger } = useAddCustomer();
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(true);
+  const [duplicateCheck, setDuplicateCheck] = useState<{
+    normalizedName: string;
+    status: DuplicateCheckStatus;
+  }>({ normalizedName: "", status: "idle" });
 
   const handleAddOption = (option: CreateOrderItemDto) => {
     setOptions((current) => [...current, option]);
@@ -88,12 +118,54 @@ export default function CreateProfilePage() {
     return () => window.clearTimeout(timer);
   }, [error]);
 
+  const currentNormalizedName = normalizeCustomerName(firstName, lastName);
+  const isDuplicateName =
+    duplicateCheck.normalizedName === currentNormalizedName &&
+    duplicateCheck.status === "duplicate";
+  const isCheckingDuplicateName =
+    duplicateCheck.normalizedName === currentNormalizedName &&
+    duplicateCheck.status === "checking";
+  const isNameAvailable =
+    duplicateCheck.normalizedName === currentNormalizedName &&
+    duplicateCheck.status === "available";
+  const canSkipDuplicateCheck = isNameAvailable;
+
+  const handleNameBlur = async () => {
+    const normalizedName = normalizeCustomerName(firstName, lastName);
+
+    if (!firstName.trim() || !lastName.trim()) {
+      setDuplicateCheck({ normalizedName: "", status: "idle" });
+      return;
+    }
+
+    if (isNameInLocalCache(normalizedName)) {
+      setDuplicateCheck({ normalizedName, status: "duplicate" });
+      return;
+    }
+
+    setDuplicateCheck({ normalizedName, status: "checking" });
+
+    const result = await checkCustomerExistsByNormalizedName(normalizedName);
+
+    setDuplicateCheck({
+      normalizedName,
+      status: result.ok ? (result.data ? "duplicate" : "available") : "error",
+    });
+  };
+
   const handleClose = () => {
     setModalOpen(false);
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const normalizedName = normalizeCustomerName(firstName, lastName);
+
+    if (isNameInLocalCache(normalizedName) || isDuplicateName) {
+      setDuplicateCheck({ normalizedName, status: "duplicate" });
+      return;
+    }
 
     const customer: CreateCustomerDto = {
       firstName,
@@ -102,7 +174,9 @@ export default function CreateProfilePage() {
       options: options,
     };
     try {
-      const savedCustomer = await addCustomerTrigger(customer);
+      const savedCustomer = await addCustomerTrigger(customer, {
+        skipDuplicateCheck: canSkipDuplicateCheck,
+      });
 
       setFirstName("");
       setLastName("");
@@ -151,22 +225,49 @@ export default function CreateProfilePage() {
           Customer Details
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <TextField
-            required
-            label="First name"
-            placeholder="Enter first name"
-            value={firstName}
-            onChange={(event) => setFirstName(event.target.value)}
-            sx={profileTextFieldSx}
-          />
-          <TextField
-            required
-            label="Last name"
-            placeholder="Enter last name"
-            value={lastName}
-            onChange={(event) => setLastName(event.target.value)}
-            sx={profileTextFieldSx}
-          />
+          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
+            <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: "20px" }}>
+              <TextField
+                required
+                label="First name"
+                placeholder="Enter first name"
+                value={firstName}
+                onChange={(event) => setFirstName(event.target.value)}
+                onBlur={handleNameBlur}
+                error={isDuplicateName}
+                sx={profileTextFieldSx}
+              />
+              <TextField
+                required
+                label="Last name"
+                placeholder="Enter last name"
+                value={lastName}
+                onChange={(event) => setLastName(event.target.value)}
+                onBlur={handleNameBlur}
+                error={isDuplicateName}
+                helperText={
+                  isDuplicateName ? "A customer with this name already exists." : undefined
+                }
+                sx={profileTextFieldSx}
+              />
+            </Box>
+            {isNameAvailable && (
+              <IconButton
+                disabled
+                aria-label="Name is available"
+                sx={{
+                  mt: "34px",
+                  border: "1px solid rgba(76, 175, 80, 0.75)",
+                  backgroundColor: "rgba(76, 175, 80, 0.14)",
+                  "&.Mui-disabled": {
+                    color: "#4caf50",
+                  },
+                }}
+              >
+                <CheckCircleIcon />
+              </IconButton>
+            )}
+          </Box>
           <Autocomplete
             multiple
             freeSolo
@@ -229,7 +330,12 @@ export default function CreateProfilePage() {
           variant="contained"
           fullWidth
           type="submit"
-          disabled={isLoading || options.length === 0}
+          disabled={
+            isLoading ||
+            isCheckingDuplicateName ||
+            isDuplicateName ||
+            options.length === 0
+          }
           sx={{
             height: 48,
             borderRadius: "12px",
