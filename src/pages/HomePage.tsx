@@ -5,6 +5,7 @@ import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import LocalCafeIcon from "@mui/icons-material/LocalCafe";
 import BadgeIcon from "@mui/icons-material/Badge";
 import LoginIcon from "@mui/icons-material/Login";
+import RecentOrders from "../components/RecentOrders";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -143,6 +144,12 @@ export default function HomePage() {
           >
             Login
           </Button>
+        )}
+
+        {user && (
+          <Box sx={{ mt: 3, textAlign: "left" }}>
+            <RecentOrders variant="glass" />
+          </Box>
         )}
       </Box>
 
