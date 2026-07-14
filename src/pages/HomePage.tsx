@@ -21,7 +21,8 @@ export default function HomePage() {
         alignItems: "center",
         justifyContent: "center",
         px: 2,
-        py: 8,
+        pt: 6,
+        pb: 10,
       }}
     >
       <Box
@@ -29,6 +30,8 @@ export default function HomePage() {
           width: "min(720px, 100%)",
           color: "white",
           textAlign: "center",
+          // Optical centering: move the content slightly above mathematical center.
+          transform: "translateY(clamp(-72px, -6vh, -32px))",
         }}
       >
         <Box
