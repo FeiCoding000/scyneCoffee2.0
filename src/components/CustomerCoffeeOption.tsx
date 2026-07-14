@@ -4,6 +4,7 @@ import {
   FormControlLabel,
   MenuItem,
   Select,
+  Slider,
   TextField,
 } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -359,6 +360,8 @@ export default function CustomerCoffeeOption({
       milk: drink?.configuration.milk ? current.milk : "none",
       strength: drink?.configuration.strength ? current.strength : 1,
       teaBags: drink?.configuration.teaBags ? current.teaBags : 1,
+      sugar: drink?.configuration.sugar ? current.sugar : 0,
+      sweetner: drink?.configuration.sweetener ? current.sweetner : 0,
       isIced: drink?.configuration.iced ? current.isIced : false,
       isXHot: drink?.configuration.extraHot ? current.isXHot : false,
       isDecaf: drink?.category === "coffee" ? current.isDecaf : false,
@@ -381,6 +384,8 @@ export default function CustomerCoffeeOption({
   const isXHote = selectedDrinkResult?.configuration.extraHot;
   const strengthTag = selectedDrinkResult?.configuration.strength;
   const teaBagTag = selectedDrinkResult?.configuration.teaBags;
+  const sugarTag = selectedDrinkResult?.configuration.sugar;
+  const sweetenerTag = selectedDrinkResult?.configuration.sweetener;
   // const otherTag = selectedDrinkResult?.category === "other";
 
   return (
@@ -473,6 +478,38 @@ export default function CustomerCoffeeOption({
               ))}
             </Select>
           </>
+        )}
+        {sugarTag && (
+          <Box>
+            <p>Sugar: {coffeeOption.sugar}</p>
+            <Slider
+              value={coffeeOption.sugar}
+              min={0}
+              max={5}
+              step={1}
+              marks
+              valueLabelDisplay="auto"
+              onChange={(_, value) =>
+                updateCoffeeOption("sugar", value as number)
+              }
+            />
+          </Box>
+        )}
+        {sweetenerTag && (
+          <Box>
+            <p>Sweetener: {coffeeOption.sweetner}</p>
+            <Slider
+              value={coffeeOption.sweetner}
+              min={0}
+              max={5}
+              step={1}
+              marks
+              valueLabelDisplay="auto"
+              onChange={(_, value) =>
+                updateCoffeeOption("sweetner", value as number)
+              }
+            />
+          </Box>
         )}
         {hasIcedVersion && (
           <FormControlLabel
