@@ -1,8 +1,6 @@
-import { db } from "../services/firebase";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import type { Coffee } from "../types/coffee";
 import MenuItemCard from "../components/MenuItemCard";
 import CoffeeModal from "../components/forms/CoffeeModal";
@@ -10,76 +8,43 @@ import CartModal from "../components/CartModal";
 import { useCart } from "../contexts/CartContext";
 import OrderConfirmedModal from "../components/OrderConfirmedModal";
 import MenuSearchbar from "../components/MenuSearchbar";
+import { useMenuItems } from "../hooks/useMenuItems";
 
 export default function MenuPage() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [menuItems, setMenuItems] = useState<Coffee[]>([]);
+  const { data: menuItems = [], error, isLoading } = useMenuItems();
   const [selectedItem, setSelectedItem] = useState<Coffee>();
   const { isCartOpen, toggleCart } = useCart();
-  const [maxPopularity, setMaxPopularity] = useState(0);
   const [isOrderConfirmed, setIsOrderCnfirmed] = useState(false);
-  const [filteredItems, setFilteredItems] = useState<Coffee[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const onSearch = (term: string) => {
-    const trimmedTerm = term.trim().toLowerCase();
+  const maxPopularity = useMemo(
+    () =>
+      menuItems.reduce(
+        (max, item) => (item.popularity > max ? item.popularity : max),
+        0,
+      ),
+    [menuItems],
+  );
 
-    if (!trimmedTerm) {
-      setFilteredItems(menuItems);
-      return;
-    }
+  const filteredItems = useMemo(() => {
+    const trimmedTerm = searchTerm.trim().toLowerCase();
 
-    const result = menuItems.filter(
+    if (!trimmedTerm) return menuItems;
+
+    return menuItems.filter(
       (item) =>
         item.name.toLowerCase().includes(trimmedTerm) ||
         item.description.toLowerCase().includes(trimmedTerm) ||
         item.category.toLowerCase().includes(trimmedTerm) ||
         item.tags?.some((tag) => tag.toLowerCase().includes(trimmedTerm)),
     );
+  }, [menuItems, searchTerm]);
 
-    setFilteredItems(result);
+  const onSearch = (term: string) => {
+    setSearchTerm(term);
   };
-
-  const fetchMenuItems = async () => {
-    try {
-      const menuCollection = collection(db, "coffee");
-      const q = query(
-        menuCollection,
-        orderBy("category", "asc"),
-        orderBy("popularity", "desc"),
-      );
-      const menuSnapshot = await getDocs(q);
-      const menuList: Coffee[] = menuSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          name: data.name,
-          description: data.description,
-          category: data.category,
-          imageUrl: data.imageUrl,
-          isAvailable: data.isAvailable,
-          tags: data.tags,
-          popularity: data.popularity,
-          hotOnly: data.hotOnly,
-          defaultMilk: data.defaultMilk,
-        };
-      });
-      setMenuItems(menuList);
-      setFilteredItems(menuList);
-
-      const maxPop = menuList.reduce(
-        (max, item) => (item.popularity > max ? item.popularity : max),
-        0,
-      );
-      setMaxPopularity(maxPop);
-    } catch (error) {
-      console.error("Error fetching menu items: ", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchMenuItems();
-  }, []);
 
   useEffect(() => {
     if (isCartOpen) {
@@ -166,6 +131,18 @@ export default function MenuPage() {
           </Button>
           <MenuSearchbar onSearch={onSearch} />
         </Box>
+
+        {isLoading && menuItems.length === 0 && (
+          <Typography sx={{ color: "rgba(255, 255, 255, 0.82)" }}>
+            Loading menu...
+          </Typography>
+        )}
+
+        {error && menuItems.length === 0 && (
+          <Typography sx={{ color: "#ffb4ab" }}>
+            Failed to load menu. Please try again later.
+          </Typography>
+        )}
 
         <Box className="menu-grid">
           {filteredItems.map((item) => (

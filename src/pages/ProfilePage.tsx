@@ -150,7 +150,7 @@ export default function ProfilePage() {
       window.clearInterval(intervalTimer);
       window.clearTimeout(closeTimer);
     };
-  }, [successOpen]);
+  }, [successOpen, navigate]);
 
   const handleStartEdit = () => {
     if (!customer) return;
