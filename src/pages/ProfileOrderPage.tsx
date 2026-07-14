@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Alert from '@mui/material/Alert';
 import { getAllCustomersFromFirestore } from "../services/customerService";
 import type { CustomerEntity } from "../schemas/entity/customerEntity";
-import RecentOrders from "../components/RecentOrders";
 
 type CustomerSearchItem = Pick<
   CustomerEntity,
@@ -177,9 +176,29 @@ export default function ProfilePage() {
         }}
       >
 
-      <Typography variant="h5">
-        Find Your Profile
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
+        <Typography variant="h5">
+          Find Your Profile
+        </Typography>
+        <Button
+          onClick={() => navigate("/")}
+          sx={{
+            color: "#F2C078",
+            border: "1px solid rgba(242, 192, 120, 0.75)",
+            borderRadius: "12px",
+            textTransform: "none",
+            px: 2,
+            py: 1,
+            whiteSpace: "nowrap",
+            "&:hover": {
+              backgroundColor: "rgba(242, 192, 120, 0.12)",
+              borderColor: "#F2C078",
+            },
+          }}
+        >
+          Home
+        </Button>
+      </Box>
 
       <Box sx={{ display: "flex", flexDirection: "row", position:"relative"}}>
         <TextField
@@ -244,7 +263,6 @@ export default function ProfilePage() {
         </Button>
       </Box>
 
-      <RecentOrders variant="glass" />
       </Box>
     </Box>
   );

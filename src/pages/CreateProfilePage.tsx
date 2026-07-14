@@ -316,14 +316,14 @@ export default function CreateProfilePage() {
             borderRadius: "12px",
             borderColor: "rgba(255, 255, 255, 0.75)",
             color: "white",
-            fontSize: "22px",
+            fontWeight: 700,
             "&:hover": {
               borderColor: "#F2C078",
               backgroundColor: "rgba(242, 192, 120, 0.08)",
             },
           }}
         >
-          +
+          Add drink option
         </Button>
 
         <Button
