@@ -87,6 +87,9 @@ export default function ProfilePage() {
   );
   const [loading, setLoading] = useState(!readCachedCustomer(id));
   const [error, setError] = useState<string | null>(null);
+  const [profileSyncStatus, setProfileSyncStatus] = useState<
+    "idle" | "syncing" | "synced" | "failed"
+  >("idle");
   const [isOrdering, setIsOrdering] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
@@ -108,13 +111,22 @@ export default function ProfilePage() {
     let isMounted = true;
 
     const loadCustomer = async () => {
-      setLoading(true);
+      const cachedCustomer = readCachedCustomer(id);
+      setLoading(!cachedCustomer);
+      setProfileSyncStatus("syncing");
       const result = await getCustomerById(id);
 
       if (!isMounted) return;
 
       if (!result.ok) {
-        setError(result.error.message);
+        if (cachedCustomer) {
+          setCustomer(cachedCustomer);
+          setError("Failed to load latest data. Using saved profile for ordering.");
+          setProfileSyncStatus("failed");
+        } else {
+          setError(result.error.message);
+          setProfileSyncStatus("failed");
+        }
         setLoading(false);
         return;
       }
@@ -122,6 +134,7 @@ export default function ProfilePage() {
       setCustomer(result.data);
       writeCachedCustomer(result.data);
       setError(null);
+      setProfileSyncStatus("synced");
       setLoading(false);
     };
 
@@ -300,9 +313,36 @@ export default function ProfilePage() {
             {getInitials(customer.firstName, customer.lastName)}
           </Avatar>
           <Box>
-            <Typography variant="h4">
-              {customerName}
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+              <Typography variant="h4">
+                {customerName}
+              </Typography>
+              {profileSyncStatus === "syncing" && (
+                <CircularProgress size={18} thickness={5} sx={{ color: "#F2C078" }} />
+              )}
+              {profileSyncStatus === "synced" && (
+                <Chip
+                  size="small"
+                  label="Up to date"
+                  sx={{
+                    color: "#2E244D",
+                    backgroundColor: "#F2C078",
+                    fontWeight: 500,
+                  }}
+                />
+              )}
+              {profileSyncStatus === "failed" && (
+                <Chip
+                  size="small"
+                  label="Using saved data"
+                  sx={{
+                    color: "white",
+                    backgroundColor: "rgba(255, 180, 180, 0.24)",
+                    border: "1px solid rgba(255, 180, 180, 0.55)",
+                  }}
+                />
+              )}
+            </Box>
             <Typography sx={{ color: "rgba(255,255,255,0.72)" }}>
               Total drinks ordered: {customer.totalDrinksOrdered}
             </Typography>
