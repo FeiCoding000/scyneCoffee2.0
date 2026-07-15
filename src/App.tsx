@@ -19,8 +19,7 @@ import ProfileOrderPage from "./pages/ProfileOrderPage";
 
 function App() {
   return (
-    <Router basename="/scyneCoffee2.0">
-      {/* <Router > */}
+    <Router>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/orders" element={<OrderPage />} />
