@@ -139,7 +139,17 @@ export default function CreateCoffeeForm({ onSuccess }: Props) {
         <Button type="button" variant="outlined" color="secondary" onClick={() => reset()}>
           Reset
         </Button>
-        <Button type="submit" variant="contained" color="primary">
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            borderRadius: "12px",
+            backgroundColor: "#F2C078",
+            color: "#2E244D",
+            fontWeight: 700,
+            "&:hover": { backgroundColor: "#FFD49A" },
+          }}
+        >
           Add Coffee
         </Button>
       </Stack>

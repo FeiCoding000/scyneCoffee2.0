@@ -259,7 +259,17 @@ export default function CoffeeModal({
 
             {/* Buttons */}
             <Stack direction="row" spacing={2}>
-              <Button type="submit" variant="contained">
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  borderRadius: "12px",
+                  backgroundColor: "#F2C078",
+                  color: "#2E244D",
+                  fontWeight: 700,
+                  "&:hover": { backgroundColor: "#FFD49A" },
+                }}
+              >
                 Add to Cart
               </Button>
               <Button variant="outlined" onClick={onClose}>

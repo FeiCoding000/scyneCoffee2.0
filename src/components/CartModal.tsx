@@ -57,7 +57,7 @@ export default function CartModal({
     return () => window.removeEventListener("resize", updateOffset);
   }, []);
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (customerName.trim() === "") {
       setSubmitWarning("Please enter your name before placing the order.");
       return;
@@ -66,7 +66,7 @@ export default function CartModal({
       return;
     }
     setSubmitWarning("");
-    submitOrder(order);
+    await submitOrder(order);
     setCustomerName("");
     onClose();
     handleConfirmedModal();
@@ -155,18 +155,35 @@ export default function CartModal({
         <Stack direction="column" spacing={2} sx={{ mt: 2 }}>
           <Button
             variant="contained"
-            color="primary"
             onClick={handlePlaceOrder}
             fullWidth
+            sx={{
+              height: 46,
+              borderRadius: "12px",
+              backgroundColor: "#F2C078",
+              color: "#2E244D",
+              fontWeight: 700,
+              "&:hover": { backgroundColor: "#FFD49A" },
+            }}
           >
             Place Order
           </Button>
 
           <Button
-            variant="contained"
-            color="primary"
+            variant="outlined"
             onClick={onClose}
             fullWidth
+            sx={{
+              height: 46,
+              borderRadius: "12px",
+              borderColor: "#2E244D",
+              color: "#2E244D",
+              fontWeight: 600,
+              "&:hover": {
+                borderColor: "#F2C078",
+                backgroundColor: "rgba(242, 192, 120, 0.12)",
+              },
+            }}
           >
             Add Another
           </Button>

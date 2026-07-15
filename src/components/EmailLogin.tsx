@@ -53,10 +53,12 @@ export default function EmailLogin() {
       <button type="submit" style={{ width: "180px", 
                   height: "40px",
                   border:"none",
-                  borderRadius: "20px",
+                  borderRadius: "12px",
                   padding: "0 10px",
-                  color: "white",
-                  backgroundColor: "purple",
+                  color: "#2E244D",
+                  backgroundColor: "#F2C078",
+                  fontWeight: 700,
+                  cursor: "pointer",
           }}  >
         Login
       </button>
