@@ -108,7 +108,8 @@ export default function ProfilePage() {
     let isMounted = true;
 
     const loadCustomer = async () => {
-      setLoading(true);
+      const cachedCustomer = readCachedCustomer(id);
+      setLoading(!cachedCustomer);
       const result = await getCustomerById(id);
 
       if (!isMounted) return;
