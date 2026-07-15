@@ -13,15 +13,20 @@ import {
 interface OrderConfirmedModalProps {
   open: boolean;
   onClose: () => void;
+  autoClose?: boolean;
+  countdownSeconds?: number;
 }
 
 export default function OrderConfirmedModal({
   open,
   onClose,
+  autoClose = false,
+  countdownSeconds = 5,
 }: OrderConfirmedModalProps) {
   const [pendingOrders, setPendingOrders] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
+  const [countdown, setCountdown] = useState(countdownSeconds);
   const { isNotiOpen, notification, toggleNoti } = useNoti();
 
   useEffect(() => {
@@ -45,14 +50,36 @@ export default function OrderConfirmedModal({
     fetchPendingOrders();
   }, [open]);
 
+  useEffect(() => {
+    if (!open || !autoClose) return;
+
+    setCountdown(countdownSeconds);
+
+    const intervalTimer = window.setInterval(() => {
+      setCountdown((current) => Math.max(current - 1, 0));
+    }, 1000);
+
+    const closeTimer = window.setTimeout(() => {
+      onClose();
+      if (notification?.isActive && isNotiOpen === false && toggleNoti) {
+        toggleNoti();
+      }
+    }, countdownSeconds * 1000);
+
+    return () => {
+      window.clearInterval(intervalTimer);
+      window.clearTimeout(closeTimer);
+    };
+  }, [autoClose, countdownSeconds, isNotiOpen, notification?.isActive, onClose, open, toggleNoti]);
+
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
       setIsClosing(false);
       onClose();
       if (notification?.isActive && isNotiOpen === false && toggleNoti) {
-          toggleNoti();
-        }
+        toggleNoti();
+      }
     }, 1000);
   };
 
@@ -64,11 +91,10 @@ export default function OrderConfirmedModal({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          bgcolor: "background.paper",
-          borderRadius: 3,
+          bgcolor: "rgba(255, 255, 255, 0.96)",
+          borderRadius: "24px",
           boxShadow: 24,
-          minWidth: 500,
-          maxWidth: 400,
+          width: "min(420px, calc(100% - 32px))",
           textAlign: "center",
           overflow: "hidden",
         }}
@@ -98,21 +124,52 @@ export default function OrderConfirmedModal({
           </div>
         )}
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClose}
-          disabled={isClosing || isLoading}
-          sx={{ m: 3 }}
-        >
-          {isClosing ? (
-            <>
-              <CircularProgress size={20} sx={{ mr: 1 }} /> Closing...
-            </>
-          ) : (
-            "Close"
-          )}
-        </Button>
+        {autoClose ? (
+          <Box sx={{ position: "relative", display: "inline-flex", mb: 3 }}>
+            <CircularProgress
+              variant="determinate"
+              value={(countdown / countdownSeconds) * 100}
+              size={96}
+              thickness={4}
+              sx={{ color: "#F2C078" }}
+            />
+            <Box
+              sx={{
+                inset: 0,
+                position: "absolute",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography variant="h4" sx={{ color: "#2E244D" }}>
+                {countdown}
+              </Typography>
+            </Box>
+          </Box>
+        ) : (
+          <Button
+            variant="contained"
+            onClick={handleClose}
+            disabled={isClosing || isLoading}
+            sx={{
+              m: 3,
+              borderRadius: "12px",
+              backgroundColor: "#F2C078",
+              color: "#2E244D",
+              fontWeight: 700,
+              "&:hover": { backgroundColor: "#FFD49A" },
+            }}
+          >
+            {isClosing ? (
+              <>
+                <CircularProgress size={20} sx={{ mr: 1 }} /> Closing...
+              </>
+            ) : (
+              "Close"
+            )}
+          </Button>
+        )}
       </Box>
     </Modal>
   );

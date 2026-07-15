@@ -1,6 +1,7 @@
 import { Avatar, Box, Chip, CircularProgress, Typography } from "@mui/material";
+import { keyframes } from "@mui/system";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import HourglassFullIcon from "@mui/icons-material/HourglassFull";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../services/firebase";
@@ -9,6 +10,62 @@ import type { Order } from "../types/order";
 type RecentOrdersProps = {
   variant?: "plain" | "glass";
 };
+
+const hourglassFlip = keyframes`
+  0%, 42% {
+    transform: rotate(0deg);
+  }
+  50%, 92% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+const AnimatedHourglassIcon = () => (
+  <Box
+    component="span"
+    sx={{
+      position: "relative",
+      width: 20,
+      height: 20,
+      ml: 0.4,
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      animation: `${hourglassFlip} 2.4s ease-in-out infinite`,
+      transformOrigin: "center",
+    }}
+  >
+    <HourglassEmptyIcon sx={{ fontSize: 20 }} />
+    <Box
+      component="span"
+      sx={{
+        position: "absolute",
+        top: 4,
+        width: 8,
+        height: 5,
+        clipPath: "polygon(0 0, 100% 0, 50% 100%)",
+        backgroundColor: "currentColor",
+        opacity: 0.45,
+      }}
+    />
+    <Box
+      component="span"
+      sx={{
+        position: "absolute",
+        bottom: 4,
+        width: 8,
+        height: 5,
+        clipPath: "polygon(50% 0, 0 100%, 100% 100%)",
+        backgroundColor: "currentColor",
+        opacity: 0.25,
+      }}
+    />
+
+  </Box>
+);
 
 export default function RecentOrders({ variant = "plain" }: RecentOrdersProps) {
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
@@ -175,7 +232,7 @@ export default function RecentOrders({ variant = "plain" }: RecentOrdersProps) {
                     order.isCompleted ? (
                       <CheckCircleIcon />
                     ) : (
-                      <HourglassFullIcon />
+                      <AnimatedHourglassIcon />
                     )
                   }
                   label="Making"

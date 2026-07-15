@@ -65,7 +65,12 @@ export default function MenuPage() {
     >
       <OrderConfirmedModal
         open={isOrderConfirmed}
-        onClose={() => setIsOrderCnfirmed(false)}
+        autoClose
+        countdownSeconds={5}
+        onClose={() => {
+          setIsOrderCnfirmed(false);
+          navigate("/");
+        }}
       />
 
       {isCartOpen && (
@@ -74,7 +79,6 @@ export default function MenuPage() {
           onClose={toggleCart}
           handleConfirmedModal={() => {
             setIsOrderCnfirmed(true);
-            navigate("/");
           }}
         />
       )}

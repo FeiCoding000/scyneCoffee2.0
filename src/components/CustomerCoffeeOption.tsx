@@ -546,7 +546,17 @@ export default function CustomerCoffeeOption({
             }
           />
         )}
-        <Button variant="contained" onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          sx={{
+            borderRadius: "12px",
+            backgroundColor: "#F2C078",
+            color: "#2E244D",
+            fontWeight: 700,
+            "&:hover": { backgroundColor: "#FFD49A" },
+          }}
+        >
           {submitLabel}
         </Button>
       </Box>
