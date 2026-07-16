@@ -7,9 +7,10 @@ Built and iteratively improved a production-ready coffee ordering system for Scy
 ## Resume Bullet Points
 
 - Developed and maintained a React + TypeScript + Firebase coffee ordering system with menu browsing, cart-based ordering, profile-based ordering, and admin order management.
+- Collaborated directly with internal users to gather requirements, validate workflows, and translate feedback into features such as profile-based ordering and real-time order status tracking.
 - Implemented real-time active order tracking with Firebase Firestore subscriptions, enabling baristas to monitor live queue updates.
 - Designed and built a profile-based one-click ordering flow, allowing users to save preferred drink configurations and quickly place repeat orders.
-- Improved weak-network user experience by introducing localStorage-based profile caching with background Firestore synchronization.
+- Reduced perceived profile loading time under unstable Wi-Fi from several seconds or longer to near-instant rendering by using cached local data first and synchronizing Firestore updates in the background.
 - Added visible profile sync states including loading, up-to-date, and fallback-to-cached-data indicators to improve user confidence and reliability.
 - Refined the homepage and menu page UI with responsive layouts, glassmorphism-style cards, brand-colored actions, and improved visual centering.
 - Enhanced the order confirmation flow with a reusable confirmation modal, countdown progress indicator, and automatic navigation back to the homepage.
