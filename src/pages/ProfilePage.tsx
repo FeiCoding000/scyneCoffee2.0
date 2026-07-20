@@ -58,6 +58,17 @@ const formatOptionSummary = (option: OrderItemEntity) => {
   return tags.join(" · ");
 };
 
+const isFullCachedCustomer = (customer: Partial<CustomerEntity> | null | undefined): customer is CustomerEntity =>
+  Boolean(
+    customer?.id &&
+      customer.firstName &&
+      customer.lastName &&
+      Array.isArray(customer.allergies) &&
+      Array.isArray(customer.options) &&
+      customer.options.length > 0 &&
+      typeof customer.totalDrinksOrdered === "number"
+  );
+
 const readCustomerCache = (): Record<string, CustomerEntity> => {
   try {
     const cachedCustomers = window.localStorage.getItem(CUSTOMER_CACHE_KEY);
@@ -73,7 +84,8 @@ const readCachedCustomer = (customerId?: string): CustomerEntity | null => {
   if (!customerId) return null;
 
   const customerCache = readCustomerCache();
-  return customerCache[customerId] ?? null;
+  const cachedCustomer = customerCache[customerId];
+  return isFullCachedCustomer(cachedCustomer) ? cachedCustomer : null;
 };
 
 const writeCachedCustomer = (customer: CustomerEntity) => {
