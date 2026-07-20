@@ -101,6 +101,8 @@ export default function ProfilePage() {
   const [showAlert, setShowAlert] = useState(true);
   const [customers, setCustomers] = useState<CustomerEntity[]>(readCachedCustomers);
   const [searchValue, setSearchValue] = useState("");
+  const [isUpdatingProfiles, setIsUpdatingProfiles] = useState(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
   const sortedCustomers = useMemo(
     () =>
@@ -202,6 +204,27 @@ export default function ProfilePage() {
     customer.id && navigate("/profile/" + customer.id);
   };
 
+  const handleUpdateProfiles = async () => {
+    setIsUpdatingProfiles(true);
+    setUpdateError(null);
+    window.localStorage.removeItem(CUSTOMER_CACHE_KEY);
+    window.localStorage.removeItem(CUSTOMER_PROFILE_CACHE_KEY);
+
+    const result = await getAllCustomersFromFirestore();
+
+    setIsUpdatingProfiles(false);
+
+    if (!result.ok) {
+      setCustomers([]);
+      setUpdateError("Failed to update profiles. Please try again.");
+      return;
+    }
+
+    setCustomers(result.data);
+    writeCachedCustomers(result.data);
+    result.data.forEach(writeCachedCustomerProfile);
+  };
+
   return (
     <Box
       sx={{
@@ -220,6 +243,11 @@ export default function ProfilePage() {
       {showAlert && error && (
         <Alert severity="error" sx= { {position: "absolute", top: "50px", left: "50%", transform: "translateX(-50%)"} }>
           {error.message}
+        </Alert>
+      )}
+      {updateError && (
+        <Alert severity="error" sx= { {position: "absolute", top: "50px", left: "50%", transform: "translateX(-50%)"} }>
+          {updateError}
         </Alert>
       )}
       <Box
@@ -242,24 +270,49 @@ export default function ProfilePage() {
         <Typography variant="h5">
           Find Your Profile
         </Typography>
-        <Button
-          onClick={() => navigate("/")}
-          sx={{
-            color: "#F2C078",
-            border: "1px solid rgba(242, 192, 120, 0.75)",
-            borderRadius: "12px",
-            textTransform: "none",
-            px: 2,
-            py: 1,
-            whiteSpace: "nowrap",
-            "&:hover": {
-              backgroundColor: "rgba(242, 192, 120, 0.12)",
-              borderColor: "#F2C078",
-            },
-          }}
-        >
-          Home
-        </Button>
+        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}>
+          <Button
+            onClick={handleUpdateProfiles}
+            disabled={isUpdatingProfiles}
+            sx={{
+              color: "#2E244D",
+              backgroundColor: "#F2C078",
+              borderRadius: "12px",
+              textTransform: "none",
+              px: 2,
+              py: 1,
+              whiteSpace: "nowrap",
+              fontWeight: 700,
+              "&:hover": {
+                backgroundColor: "#FFD49A",
+              },
+              "&.Mui-disabled": {
+                backgroundColor: "rgba(255, 255, 255, 0.18)",
+                color: "rgba(255, 255, 255, 0.45)",
+              },
+            }}
+          >
+            {isUpdatingProfiles ? "Updating..." : "Update"}
+          </Button>
+          <Button
+            onClick={() => navigate("/")}
+            sx={{
+              color: "#F2C078",
+              border: "1px solid rgba(242, 192, 120, 0.75)",
+              borderRadius: "12px",
+              textTransform: "none",
+              px: 2,
+              py: 1,
+              whiteSpace: "nowrap",
+              "&:hover": {
+                backgroundColor: "rgba(242, 192, 120, 0.12)",
+                borderColor: "#F2C078",
+              },
+            }}
+          >
+            Home
+          </Button>
+        </Box>
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "row", position:"relative"}}>

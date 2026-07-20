@@ -124,6 +124,15 @@ export default function ProfilePage() {
     [customer]
   );
 
+  const displayAllergies = useMemo(
+    () =>
+      customer?.allergies.filter((allergy) => {
+        const normalizedAllergy = allergy.trim().toLowerCase();
+        return normalizedAllergy && !["nil", "none", "no", "n/a"].includes(normalizedAllergy);
+      }) ?? [],
+    [customer]
+  );
+
   useEffect(() => {
     if (!id) {
       navigate("/create-profile", { replace: true });
@@ -371,9 +380,9 @@ export default function ProfilePage() {
           </Box>
         </Box>
 
-        {customer.allergies.length > 0 && (
+        {displayAllergies.length > 0 && (
           <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 3 }}>
-            {customer.allergies.map((allergy) => (
+            {displayAllergies.map((allergy) => (
               <Chip
                 key={allergy}
                 label={allergy}
