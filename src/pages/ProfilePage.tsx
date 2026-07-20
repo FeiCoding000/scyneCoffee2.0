@@ -31,7 +31,7 @@ import {
 } from "../services/customerService";
 import ProfileOptionsEditor from "../components/profile/ProfileOptionsEditor";
 
-const SELECTED_CUSTOMER_CACHE_KEY = "scyneCoffee.selectedCustomer";
+const CUSTOMER_CACHE_KEY = "scyneCoffee.customerCache";
 
 const getInitials = (firstName = "", lastName = "") =>
   `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
@@ -58,24 +58,34 @@ const formatOptionSummary = (option: OrderItemEntity) => {
   return tags.join(" · ");
 };
 
-const readCachedCustomer = (customerId?: string): CustomerEntity | null => {
-  if (!customerId) return null;
-
+const readCustomerCache = (): Record<string, CustomerEntity> => {
   try {
-    const cachedCustomer = window.localStorage.getItem(SELECTED_CUSTOMER_CACHE_KEY);
-    if (!cachedCustomer) return null;
+    const cachedCustomers = window.localStorage.getItem(CUSTOMER_CACHE_KEY);
+    if (!cachedCustomers) return {};
 
-    const parsedCustomer = JSON.parse(cachedCustomer) as CustomerEntity;
-    return parsedCustomer.id === customerId ? parsedCustomer : null;
+    return JSON.parse(cachedCustomers) as Record<string, CustomerEntity>;
   } catch {
-    return null;
+    return {};
   }
 };
 
+const readCachedCustomer = (customerId?: string): CustomerEntity | null => {
+  if (!customerId) return null;
+
+  const customerCache = readCustomerCache();
+  return customerCache[customerId] ?? null;
+};
+
 const writeCachedCustomer = (customer: CustomerEntity) => {
+  if (!customer.id) return;
+
+  const customerCache = readCustomerCache();
   window.localStorage.setItem(
-    SELECTED_CUSTOMER_CACHE_KEY,
-    JSON.stringify(customer)
+    CUSTOMER_CACHE_KEY,
+    JSON.stringify({
+      ...customerCache,
+      [customer.id]: customer,
+    })
   );
 };
 
