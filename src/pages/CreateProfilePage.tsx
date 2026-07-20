@@ -28,6 +28,14 @@ const CUSTOMER_CACHE_KEY = "scyneCoffee.customers";
 const normalizeCustomerName = (firstName: string, lastName: string) =>
   `${firstName.trim().toLowerCase()} ${lastName.trim().toLowerCase()}`.trim();
 
+const sanitizeAllergies = (values: string[]) =>
+  values
+    .map((value) => value.trim())
+    .filter(
+      (value) =>
+        value && !["nil", "none", "no", "n/a"].includes(value.toLowerCase())
+    );
+
 const isNameInLocalCache = (normalizedName: string) => {
   try {
     const cachedCustomers = window.localStorage.getItem(CUSTOMER_CACHE_KEY);
@@ -170,7 +178,7 @@ export default function CreateProfilePage() {
     const customer: CreateCustomerDto = {
       firstName,
       lastName,
-      allergies,
+      allergies: sanitizeAllergies(allergies),
       options: options,
     };
     try {
