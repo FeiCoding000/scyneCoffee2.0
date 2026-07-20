@@ -11,10 +11,24 @@ const CUSTOMER_PROFILE_CACHE_KEY = "scyneCoffee.customerCache";
 const getCustomerName = (customer: CustomerEntity) =>
   `${customer.firstName} ${customer.lastName}`.trim();
 
+const isFullCachedCustomer = (customer: Partial<CustomerEntity> | null | undefined): customer is CustomerEntity =>
+  Boolean(
+    customer?.id &&
+      customer.firstName &&
+      customer.lastName &&
+      Array.isArray(customer.allergies) &&
+      Array.isArray(customer.options) &&
+      customer.options.length > 0 &&
+      typeof customer.totalDrinksOrdered === "number"
+  );
+
 const readCachedCustomers = (): CustomerEntity[] => {
   try {
     const cachedCustomers = window.localStorage.getItem(CUSTOMER_CACHE_KEY);
-    return cachedCustomers ? JSON.parse(cachedCustomers) : [];
+    if (!cachedCustomers) return [];
+
+    const parsedCustomers = JSON.parse(cachedCustomers) as Partial<CustomerEntity>[];
+    return parsedCustomers.every(isFullCachedCustomer) ? parsedCustomers : [];
   } catch {
     return [];
   }
