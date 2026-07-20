@@ -5,24 +5,13 @@ import Alert from '@mui/material/Alert';
 import { getAllCustomersFromFirestore } from "../services/customerService";
 import type { CustomerEntity } from "../schemas/entity/customerEntity";
 
-type CustomerSearchItem = Pick<
-  CustomerEntity,
-  "id" | "firstName" | "lastName" | "normalizedName"
->;
-
 const CUSTOMER_CACHE_KEY = "scyneCoffee.customers";
+const CUSTOMER_PROFILE_CACHE_KEY = "scyneCoffee.customerCache";
 
-const getCustomerName = (customer: CustomerSearchItem) =>
+const getCustomerName = (customer: CustomerEntity) =>
   `${customer.firstName} ${customer.lastName}`.trim();
 
-const toSearchItem = (customer: CustomerEntity): CustomerSearchItem => ({
-  id: customer.id,
-  firstName: customer.firstName,
-  lastName: customer.lastName,
-  normalizedName: customer.normalizedName,
-});
-
-const readCachedCustomers = (): CustomerSearchItem[] => {
+const readCachedCustomers = (): CustomerEntity[] => {
   try {
     const cachedCustomers = window.localStorage.getItem(CUSTOMER_CACHE_KEY);
     return cachedCustomers ? JSON.parse(cachedCustomers) : [];
@@ -31,8 +20,32 @@ const readCachedCustomers = (): CustomerSearchItem[] => {
   }
 };
 
-const writeCachedCustomers = (customers: CustomerSearchItem[]) => {
+const writeCachedCustomers = (customers: CustomerEntity[]) => {
   window.localStorage.setItem(CUSTOMER_CACHE_KEY, JSON.stringify(customers));
+};
+
+const writeCachedCustomerProfile = (customer: CustomerEntity) => {
+  if (!customer.id) return;
+
+  try {
+    const cachedProfiles = window.localStorage.getItem(CUSTOMER_PROFILE_CACHE_KEY);
+    const profileCache = cachedProfiles
+      ? (JSON.parse(cachedProfiles) as Record<string, CustomerEntity>)
+      : {};
+
+    window.localStorage.setItem(
+      CUSTOMER_PROFILE_CACHE_KEY,
+      JSON.stringify({
+        ...profileCache,
+        [customer.id]: customer,
+      })
+    );
+  } catch {
+    window.localStorage.setItem(
+      CUSTOMER_PROFILE_CACHE_KEY,
+      JSON.stringify({ [customer.id]: customer })
+    );
+  }
 };
 
 const profileOrderTextFieldSx = {
@@ -72,21 +85,31 @@ export default function ProfilePage() {
   const { data, error } = location.state || {};
   const createdCustomer = data as CustomerEntity | undefined;
   const [showAlert, setShowAlert] = useState(true);
-  const [customers, setCustomers] = useState<CustomerSearchItem[]>(readCachedCustomers);
+  const [customers, setCustomers] = useState<CustomerEntity[]>(readCachedCustomers);
   const [searchValue, setSearchValue] = useState("");
+
+  const sortedCustomers = useMemo(
+    () =>
+      [...customers].sort((a, b) =>
+        getCustomerName(a).localeCompare(getCustomerName(b))
+      ),
+    [customers]
+  );
 
   const filteredNameList = useMemo(() => {
     const value = searchValue.trim().toLowerCase();
 
     if (!value) return [];
 
-    return customers.filter((customer) =>
+    return sortedCustomers.filter((customer) =>
       getCustomerName(customer).toLowerCase().includes(value)
     );
-  }, [customers, searchValue]);
+  }, [sortedCustomers, searchValue]);
 
 
   useEffect(() => {
+    if (customers.length > 0) return;
+
     let isMounted = true;
 
     const loadCustomers = async () => {
@@ -94,9 +117,9 @@ export default function ProfilePage() {
 
       if (!isMounted || !result.ok) return;
 
-      const customerList = result.data.map(toSearchItem);
-      setCustomers(customerList);
-      writeCachedCustomers(customerList);
+      setCustomers(result.data);
+      writeCachedCustomers(result.data);
+      result.data.forEach(writeCachedCustomerProfile);
     };
 
     loadCustomers();
@@ -104,23 +127,43 @@ export default function ProfilePage() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [customers.length]);
 
   useEffect(() => {
     if (!createdCustomer?.id) return;
 
-    const createdCustomerSearchItem = toSearchItem(createdCustomer);
+    let isMounted = true;
 
-    setCustomers((currentCustomers) => {
-      const nextCustomers = [
-        createdCustomerSearchItem,
-        ...currentCustomers.filter(
-          (customer) => customer.id !== createdCustomerSearchItem.id
-        ),
-      ];
-      writeCachedCustomers(nextCustomers);
-      return nextCustomers;
-    });
+    const refreshCustomersAfterCreate = async () => {
+      const result = await getAllCustomersFromFirestore();
+
+      if (!isMounted) return;
+
+      if (result.ok) {
+        setCustomers(result.data);
+        writeCachedCustomers(result.data);
+        result.data.forEach(writeCachedCustomerProfile);
+        return;
+      }
+
+      setCustomers((currentCustomers) => {
+        const nextCustomers = [
+          createdCustomer,
+          ...currentCustomers.filter(
+            (customer) => customer.id !== createdCustomer.id
+          ),
+        ];
+        writeCachedCustomers(nextCustomers);
+        writeCachedCustomerProfile(createdCustomer);
+        return nextCustomers;
+      });
+    };
+
+    refreshCustomersAfterCreate();
+
+    return () => {
+      isMounted = false;
+    };
   }, [createdCustomer]);
 
   useEffect(() => {
@@ -138,7 +181,12 @@ export default function ProfilePage() {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearchValue(e.target.value);
-  }
+  };
+
+  const handleOpenProfile = (customer: CustomerEntity) => {
+    writeCachedCustomerProfile(customer);
+    customer.id && navigate("/profile/" + customer.id);
+  };
 
   return (
     <Box
@@ -228,7 +276,7 @@ export default function ProfilePage() {
             {filteredNameList.map((customer) => (
               <ListItem
                 key={customer.id}
-                onClick={() => customer.id && navigate("/profile/" + customer.id)}
+                onClick={() => handleOpenProfile(customer)}
                 sx={{
                   cursor: "pointer",
                   "&:hover": {
@@ -242,6 +290,39 @@ export default function ProfilePage() {
           </List>
         ) : null}
       </Box>
+      <Box>
+        <Typography variant="subtitle2" sx={{ color: "rgba(255, 255, 255, 0.82)", mb: 1 }}>
+          All profiles
+        </Typography>
+        <List
+          sx={{
+            maxHeight: "280px",
+            overflowY: "auto",
+            backgroundColor: "rgba(255, 255, 255, 0.08)",
+            border: "1px solid rgba(255, 255, 255, 0.14)",
+            borderRadius: "12px",
+            py: 0.5,
+          }}
+        >
+          {sortedCustomers.map((customer) => (
+            <ListItem
+              key={customer.id}
+              onClick={() => handleOpenProfile(customer)}
+              sx={{
+                cursor: "pointer",
+                borderRadius: "8px",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "rgba(242, 192, 120, 0.18)",
+                },
+              }}
+            >
+              {getCustomerName(customer)}
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+
       <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: { xs: "flex-start", sm: "center" }, gap: "10px"}}>
         <Typography variant="subtitle2" sx={{ color: "rgba(255, 255, 255, 0.82)" }}>
           Can't find your name?
