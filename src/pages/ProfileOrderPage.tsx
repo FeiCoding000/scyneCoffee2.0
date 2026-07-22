@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography, List, ListItem } from "@mui/material";
+import { Avatar, Box, Button, TextField, Typography, List, ListItem } from "@mui/material";
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Alert from '@mui/material/Alert';
@@ -10,6 +10,9 @@ const CUSTOMER_PROFILE_CACHE_KEY = "scyneCoffee.customerCache";
 
 const getCustomerName = (customer: CustomerEntity) =>
   `${customer.firstName} ${customer.lastName}`.trim();
+
+const getCustomerInitial = (customer: CustomerEntity) =>
+  customer.firstName.trim().charAt(0).toUpperCase();
 
 const isFullCachedCustomer = (customer: Partial<CustomerEntity> | null | undefined): customer is CustomerEntity =>
   Boolean(
@@ -101,6 +104,7 @@ export default function ProfilePage() {
   const [showAlert, setShowAlert] = useState(true);
   const [customers, setCustomers] = useState<CustomerEntity[]>(readCachedCustomers);
   const [searchValue, setSearchValue] = useState("");
+  const [selectedInitial, setSelectedInitial] = useState<string | null>(null);
   const [isUpdatingProfiles, setIsUpdatingProfiles] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
@@ -111,6 +115,33 @@ export default function ProfilePage() {
       ),
     [customers]
   );
+
+  const initials = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          customers.map(getCustomerInitial).filter((initial) => /^[A-Z]$/.test(initial))
+        )
+      ).sort((a, b) => a.localeCompare(b)),
+    [customers]
+  );
+
+  const profileList = useMemo(() => {
+    const initialFilteredCustomers = selectedInitial
+      ? customers.filter((customer) => getCustomerInitial(customer) === selectedInitial)
+      : customers;
+
+    return [...initialFilteredCustomers].sort((a, b) => {
+      if (!selectedInitial) {
+        return getCustomerName(a).localeCompare(getCustomerName(b));
+      }
+
+      const orderDifference = b.totalDrinksOrdered - a.totalDrinksOrdered;
+      return orderDifference || getCustomerName(a).localeCompare(getCustomerName(b));
+    });
+  }, [customers, selectedInitial]);
+
+  const initialColumnRows = Math.max(1, Math.ceil(initials.length / 2));
 
   const filteredNameList = useMemo(() => {
     const value = searchValue.trim().toLowerCase();
@@ -199,6 +230,12 @@ export default function ProfilePage() {
     setSearchValue(e.target.value);
   };
 
+  const handleInitialClick = (initial: string) => {
+    setSelectedInitial((currentInitial) =>
+      currentInitial === initial ? null : initial
+    );
+  };
+
   const handleOpenProfile = (customer: CustomerEntity) => {
     writeCachedCustomerProfile(customer);
     customer.id && navigate("/profile/" + customer.id);
@@ -282,7 +319,7 @@ export default function ProfilePage() {
               px: 2,
               py: 1,
               whiteSpace: "nowrap",
-              fontWeight: 700,
+              fontWeight: 400,
               "&:hover": {
                 backgroundColor: "#FFD49A",
               },
@@ -359,35 +396,77 @@ export default function ProfilePage() {
       </Box>
       <Box>
         <Typography variant="subtitle2" sx={{ color: "rgba(255, 255, 255, 0.82)", mb: 1 }}>
-          All profiles
+          {selectedInitial ? `${selectedInitial} profiles` : "All profiles"}
         </Typography>
-        <List
-          sx={{
-            maxHeight: "280px",
-            overflowY: "auto",
-            backgroundColor: "rgba(255, 255, 255, 0.08)",
-            border: "1px solid rgba(255, 255, 255, 0.14)",
-            borderRadius: "12px",
-            py: 0.5,
-          }}
-        >
-          {sortedCustomers.map((customer) => (
-            <ListItem
-              key={customer.id}
-              onClick={() => handleOpenProfile(customer)}
-              sx={{
-                cursor: "pointer",
-                borderRadius: "8px",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "rgba(242, 192, 120, 0.18)",
-                },
-              }}
-            >
-              {getCustomerName(customer)}
-            </ListItem>
-          ))}
-        </List>
+        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
+          <List
+            sx={{
+              flex: 1,
+              maxHeight: "280px",
+              overflowY: "auto",
+              backgroundColor: "rgba(255, 255, 255, 0.08)",
+              border: "1px solid rgba(255, 255, 255, 0.14)",
+              borderRadius: "12px",
+              py: 0.5,
+            }}
+          >
+            {profileList.map((customer) => (
+              <ListItem
+                key={customer.id}
+                onClick={() => handleOpenProfile(customer)}
+                sx={{
+                  cursor: "pointer",
+                  borderRadius: "8px",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "rgba(242, 192, 120, 0.18)",
+                  },
+                }}
+              >
+                {getCustomerName(customer)}
+              </ListItem>
+            ))}
+          </List>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateRows: `repeat(${initialColumnRows}, 32px)`,
+              gridAutoFlow: "column",
+              gridAutoColumns: "32px",
+              gap: "8px",
+            }}
+          >
+            {initials.map((initial) => {
+              const isSelected = selectedInitial === initial;
+
+              return (
+                <Avatar
+                  key={initial}
+                  onClick={() => handleInitialClick(initial)}
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    cursor: "pointer",
+                    bgcolor: isSelected ? "#F2C078" : "rgba(255, 255, 255, 0.16)",
+                    color: isSelected ? "#2E244D" : "#ffffff",
+                    border: isSelected
+                      ? "2px solid #FFD49A"
+                      : "1px solid rgba(255, 255, 255, 0.32)",
+                    fontSize: "0.9rem",
+                    fontWeight: 400,
+                    transition: "transform 120ms ease, background-color 120ms ease",
+                    "&:hover": {
+                      transform: "scale(1.06)",
+                      bgcolor: isSelected ? "#FFD49A" : "rgba(242, 192, 120, 0.32)",
+                    },
+                  }}
+                >
+                  {initial}
+                </Avatar>
+              );
+            })}
+          </Box>
+        </Box>
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: { xs: "flex-start", sm: "center" }, gap: "10px"}}>
@@ -407,7 +486,7 @@ export default function ProfilePage() {
             },
           }}
         >
-          Add your profile.
+          Create profile.
         </Button>
       </Box>
 
