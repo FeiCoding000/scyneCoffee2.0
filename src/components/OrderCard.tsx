@@ -68,7 +68,15 @@ export default function OrderCard({ order }: { order: Order }) {
       }}
     >
       <CardContent>
-        <Typography variant="h6" sx={{ mb: 1 }}>
+        <Typography
+          variant="h6"
+          sx={{
+            mb: 1,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
           {customerName}
         </Typography>
 

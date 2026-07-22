@@ -74,7 +74,7 @@ export default function OrderList() {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
+            gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" },
             gap: 3,
             maxWidth: "1120px",
             mx: "auto",

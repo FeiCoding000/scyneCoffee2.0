@@ -1,8 +1,31 @@
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Cart from "../Cart";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import packageJson from "../../../package.json";
+
+const LogoWithVersion = () => (
+  <Box sx={{ position: "relative", display: "inline-block", ml: "10px", mt: "5px" }}>
+    <img
+      src="https://cdn.prod.website-files.com/650aedb6397a7021a593e810/672ac5664163926064db6bd7_scyne-logo.svg"
+      alt="Scyne Logo"
+      style={{ height: "30px", width: "auto" }}
+    />
+    <Typography
+      component="span"
+      sx={{
+        position: "absolute",
+        right: -22,
+        bottom: -2,
+        color: "rgba(255, 255, 255, 0.72)",
+        fontSize: "0.52rem",
+        lineHeight: 1,
+      }}
+    >
+      v{packageJson.version}
+    </Typography>
+  </Box>
+);
 
 export default function NavBar() {
   const { user } = useAuth();
@@ -28,11 +51,7 @@ export default function NavBar() {
       }}
     >
       <Box sx={{ textAlign: "center" }}>
-        <img
-          src="https://cdn.prod.website-files.com/650aedb6397a7021a593e810/672ac5664163926064db6bd7_scyne-logo.svg"
-          alt="Scyne Logo"
-          style={{ height: "30px", width: "auto", paddingLeft: "10px", marginTop:"5px" }}
-        />
+        <LogoWithVersion />
       </Box>
 
       <div className="navBar-right"
@@ -110,7 +129,7 @@ export default function NavBar() {
         >
           Logout
         </Button> */}
-        <p>Version: {packageJson.version} </p>
+
       </div>
     </div>
   ) : (
@@ -126,11 +145,7 @@ export default function NavBar() {
       }}
     >
       <Box sx={{ textAlign: "center" }}>
-        <img
-          src="https://cdn.prod.website-files.com/650aedb6397a7021a593e810/672ac5664163926064db6bd7_scyne-logo.svg"
-          alt="Scyne Logo"
-          style={{ height: "30px", width: "auto", paddingLeft: "10px", marginTop:"5px" }}
-        />
+        <LogoWithVersion />
       </Box>
       <Button
           sx={{
