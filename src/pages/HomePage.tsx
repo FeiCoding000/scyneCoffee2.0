@@ -1,16 +1,28 @@
 import { useAuth } from "../contexts/AuthContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Layout/Footer";
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, IconButton, Tooltip, Typography } from "@mui/material";
 import LocalCafeIcon from "@mui/icons-material/LocalCafe";
 import BadgeIcon from "@mui/icons-material/Badge";
 import LoginIcon from "@mui/icons-material/Login";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import RecentOrders from "../components/RecentOrders";
 import packageJson from "../../package.json";
 
 export default function HomePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [isQuickMenuOpen, setIsQuickMenuOpen] = useState(false);
+
+  const quickLinks = [
+    { label: "Statistics", path: "/statistic", icon: <BarChartIcon sx={{ fontSize: 18 }} /> },
+    { label: "Orders", path: "/orders", icon: <ListAltIcon sx={{ fontSize: 18 }} /> },
+    { label: "Create Profile", path: "/create-profile", icon: <PersonAddIcon sx={{ fontSize: 18 }} /> },
+  ];
 
   return (
     <Box
@@ -170,6 +182,80 @@ export default function HomePage() {
           </Box>
         )}
       </Box>
+
+      {user && (
+        <Box
+          sx={{
+            position: "fixed",
+            right: { xs: 18, sm: 28 },
+            bottom: { xs: 68, sm: 72 },
+            width: 56,
+            height: 56,
+            zIndex: 20,
+          }}
+        >
+          {quickLinks.map((link, index) => {
+            const positions = [
+              { right: 0, bottom: 70 },
+              { right: 52, bottom: 52 },
+              { right: 70, bottom: 0 },
+            ];
+
+            return (
+              <Tooltip key={link.path} title={link.label} placement="left">
+                <IconButton
+                  onClick={() => navigate(link.path)}
+                  sx={{
+                    position: "absolute",
+                    ...positions[index],
+                    width: 38,
+                    height: 38,
+                    color: "#2E244D",
+                    backgroundColor: "#F2C078",
+                    border: "1px solid rgba(255, 255, 255, 0.65)",
+                    boxShadow: "0 10px 24px rgba(0, 0, 0, 0.24)",
+                    opacity: isQuickMenuOpen ? 1 : 0,
+                    pointerEvents: isQuickMenuOpen ? "auto" : "none",
+                    transform: isQuickMenuOpen ? "scale(1)" : "scale(0.6)",
+                    transition: `opacity 160ms ease ${index * 40}ms, transform 160ms ease ${index * 40}ms`,
+                    "&:hover": {
+                      backgroundColor: "#FFD49A",
+                    },
+                  }}
+                >
+                  {link.icon}
+                </IconButton>
+              </Tooltip>
+            );
+          })}
+          <IconButton
+            aria-label="Toggle quick links"
+            onClick={() => setIsQuickMenuOpen((isOpen) => !isOpen)}
+            sx={{
+              position: "absolute",
+              right: 0,
+              bottom: 0,
+              width: 48,
+              height: 48,
+              color: "#2E244D",
+              backgroundColor: "#F2C078",
+              border: "1px solid rgba(255, 255, 255, 0.72)",
+              boxShadow: "0 12px 30px rgba(0, 0, 0, 0.28)",
+              "&:hover": {
+                backgroundColor: "#FFD49A",
+              },
+            }}
+          >
+            <KeyboardArrowUpIcon
+              sx={{
+                fontSize: 20,
+                transform: isQuickMenuOpen ? "rotate(135deg)" : "rotate(0deg)",
+                transition: "transform 160ms ease",
+              }}
+            />
+          </IconButton>
+        </Box>
+      )}
 
       <Box
         component="footer"
