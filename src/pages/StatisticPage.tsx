@@ -4,7 +4,7 @@ import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import type { Order } from "../types/order";
 import DailyDataLineChart from "../components/dataComponents/DailyDataLineChart";
 import MilkPieChart from "../components/dataComponents/MilkPieChart";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Skeleton } from "@mui/material";
 import type { Coffee } from "../types/coffee";
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -21,6 +21,8 @@ export default function StatisticPage() {
   const [orders, setOrders] = useState<Order[]>();
   const [mostPopular, setMostPopular] = useState<Coffee[]>([]);
   const [milkDetail, setMilkDetail] = useState(false);
+  const [isOrdersLoading, setIsOrdersLoading] = useState(true);
+  const [isPopularLoading, setIsPopularLoading] = useState(true);
 
   //total coffees ordered
   const calculateTotalNumber = (orders: Order[]) => {
@@ -113,6 +115,8 @@ export default function StatisticPage() {
         setOrders(orders);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsOrdersLoading(false);
       }
     };
 
@@ -122,16 +126,22 @@ export default function StatisticPage() {
   //fetch most popular coffee
   useEffect(() => {
     const fetchMostPPLcoffee = async () => {
-      const coffeeRef = collection(db, "coffee");
-      const q = query(coffeeRef, orderBy("popularity", "desc"), limit(3));
-      const querySnapshot = await getDocs(q);
+      try {
+        const coffeeRef = collection(db, "coffee");
+        const q = query(coffeeRef, orderBy("popularity", "desc"), limit(3));
+        const querySnapshot = await getDocs(q);
 
-      if (!querySnapshot.empty) {
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Coffee[];
-        setMostPopular(data);
+        if (!querySnapshot.empty) {
+          const data = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as Coffee[];
+          setMostPopular(data);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsPopularLoading(false);
       }
     };
 
@@ -153,6 +163,7 @@ export default function StatisticPage() {
   const yData = sortedArray.map((item) => item.value);
 
   //  //get data for pie
+  const isStatisticLoading = isOrdersLoading || isPopularLoading;
 
   return (
     <Box
@@ -189,12 +200,24 @@ export default function StatisticPage() {
             backgroundColor: "#ffffff",
           }}
         >
-          <div style={{textAlign: "center", width: "50px", height: "50px", borderRadius: "50%", display: "flex", justifyContent: "center",backgroundColor: "#9fdfff", alignItems: "center"}}>
-          <MilitaryTechIcon style={{fontSize: "30px", color: "#2e1a1a"} }/>
-          </div>
-          <div><h3 style={{fontSize: "22px"}}>{mostPopular[0]?.name}</h3> 
-          <p style={{fontSize: "12px",color: "grey"}}>{"Most popular ( "+mostPopular[0]?.popularity+" ordered )"}</p>
-          </div>
+          {isStatisticLoading ? (
+            <>
+              <Skeleton variant="circular" width={50} height={50} />
+              <Box sx={{ width: "60%" }}>
+                <Skeleton variant="text" height={32} />
+                <Skeleton variant="text" height={18} width="80%" />
+              </Box>
+            </>
+          ) : (
+            <>
+              <div style={{textAlign: "center", width: "50px", height: "50px", borderRadius: "50%", display: "flex", justifyContent: "center",backgroundColor: "#9fdfff", alignItems: "center"}}>
+              <MilitaryTechIcon style={{fontSize: "30px", color: "#2e1a1a"} }/>
+              </div>
+              <div><h3 style={{fontSize: "22px"}}>{mostPopular[0]?.name}</h3> 
+              <p style={{fontSize: "12px",color: "grey"}}>{"Most popular ( "+mostPopular[0]?.popularity+" ordered )"}</p>
+              </div>
+            </>
+          )}
         </Box>
         <Box
           className="top"
@@ -212,13 +235,25 @@ export default function StatisticPage() {
             color:"black"
           }}
         >
-          <div style={{textAlign: "center", width: "50px", height: "50px", borderRadius: "50%", display: "flex", justifyContent: "center",backgroundColor: "#9fdfff", alignItems: "center"}}>
-          <BarChartIcon style={{fontSize: "30px", color: "#2e1a1a"}}/>
-          </div>
-          <div>
-          <h3 style={ {fontSize: "22px"}}>{totalNumber}</h3>
-          <p style={{textAlign: "center", color: "grey", fontSize: "12px"}}>Total coffees ordered</p>
-          </div>
+          {isStatisticLoading ? (
+            <>
+              <Skeleton variant="circular" width={50} height={50} />
+              <Box sx={{ width: "55%" }}>
+                <Skeleton variant="text" height={32} width="45%" />
+                <Skeleton variant="text" height={18} />
+              </Box>
+            </>
+          ) : (
+            <>
+              <div style={{textAlign: "center", width: "50px", height: "50px", borderRadius: "50%", display: "flex", justifyContent: "center",backgroundColor: "#9fdfff", alignItems: "center"}}>
+              <BarChartIcon style={{fontSize: "30px", color: "#2e1a1a"}}/>
+              </div>
+              <div>
+              <h3 style={ {fontSize: "22px"}}>{totalNumber}</h3>
+              <p style={{textAlign: "center", color: "grey", fontSize: "12px"}}>Total coffees ordered</p>
+              </div>
+            </>
+          )}
 
         </Box>
       </Box>
@@ -228,23 +263,31 @@ export default function StatisticPage() {
           className="dataContainer"
           style={{ border: "1px solid white", width: "100%" }}
         >
-          <DailyDataLineChart
-            xData={xData}
-            yData={yData}
-            title="Daily Coffee"
-          />
+          {isStatisticLoading ? (
+            <Skeleton variant="rounded" height={280} />
+          ) : (
+            <DailyDataLineChart
+              xData={xData}
+              yData={yData}
+              title="Daily Coffee"
+            />
+          )}
         </Box>
         <Box
           className="dataContainer"
           style={{ border: "1px solid white", width: "100%" }}
         >
-          <MilkPieChart data={milkData}></MilkPieChart>
+          {isStatisticLoading ? (
+            <Skeleton variant="rounded" height={280} />
+          ) : (
+            <MilkPieChart data={milkData}></MilkPieChart>
+          )}
         </Box>
 
       </Box>
-      <Button variant= "contained" onClick= {() => setMilkDetail(!milkDetail)}>Show Milk Details</Button>
+      <Button variant= "contained" onClick= {() => setMilkDetail(!milkDetail)} disabled={isStatisticLoading}>Show Milk Details</Button>
       
-    {milkDetail &&
+    {milkDetail && !isStatisticLoading &&
     <Box style= {{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "flex-start", alignItems: "center", width: "100%", backgroundColor: "#ffffff", padding: "10px", borderRadius: "3px", border: "1px solid white"}}>
           {milkData.map((milk) => (
           <div style={{ color: "black", borderRadius: "3px"}} key={milk.id}>
