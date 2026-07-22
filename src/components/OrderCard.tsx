@@ -46,18 +46,40 @@ export default function OrderCard({ order }: { order: Order }) {
   return (
     <Card
       sx={{
-        mb: 3,
-        borderRadius: 3,
-        boxShadow: 3,
+        position: "relative",
+        borderRadius: "10px 10px 18px 18px",
+        boxShadow: "0 14px 28px rgba(0, 0, 0, 0.22)",
         p: 2,
+        background: "linear-gradient(180deg, #FFF7C8 0%, #FFEFA3 100%)",
+        color: "#2E244D",
+        border: "1px solid rgba(46, 36, 77, 0.12)",
+        transform: "rotate(-0.4deg)",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: "14%",
+          width: "72%",
+          height: "14px",
+          borderRadius: "0 0 10px 10px",
+          background: "rgba(255, 255, 255, 0.62)",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.14)",
+        },
       }}
     >
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Customer: {customerName}
+        <Typography variant="h6" sx={{ mb: 1 }}>
+          {customerName}
         </Typography>
 
-        <Typography variant="subtitle1" fontWeight="bold">
+        <Box
+          sx={{
+            borderBottom: "2px dashed rgba(46, 36, 77, 0.35)",
+            mb: 2,
+          }}
+        />
+
+        <Typography variant="subtitle1">
           Ordered Drink(s)
         </Typography>
 
@@ -68,6 +90,7 @@ export default function OrderCard({ order }: { order: Order }) {
               sx={{
                 p: 1.5,
                 borderRadius: 2,
+                backgroundColor: "rgba(255, 255, 255, 0.62)",
               }}
             >
               <Typography variant="subtitle2">
@@ -114,7 +137,7 @@ export default function OrderCard({ order }: { order: Order }) {
                   </Typography>
                 )}
 
-                <Typography fontWeight="bold" variant="body2">
+                <Typography variant="body2">
                   📈Quantity: {item.quantity}
                 </Typography>
               </Box>
