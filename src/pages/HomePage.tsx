@@ -6,6 +6,7 @@ import LocalCafeIcon from "@mui/icons-material/LocalCafe";
 import BadgeIcon from "@mui/icons-material/Badge";
 import LoginIcon from "@mui/icons-material/Login";
 import RecentOrders from "../components/RecentOrders";
+import packageJson from "../../package.json";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -34,17 +35,31 @@ export default function HomePage() {
           transform: "translateY(clamp(-72px, -6vh, -32px))",
         }}
       >
-        <Box
-          component="img"
-          src="https://cdn.prod.website-files.com/650aedb6397a7021a593e810/672ac5664163926064db6bd7_scyne-logo.svg"
-          alt="Scyne Logo"
-          sx={{
-            height: 48,
-            width: "auto",
-            mb: 2,
-            filter: "brightness(0) invert(1)",
-          }}
-        />
+        <Box sx={{ position: "relative", display: "inline-block", mb: 2 }}>
+          <Box
+            component="img"
+            src="https://cdn.prod.website-files.com/650aedb6397a7021a593e810/672ac5664163926064db6bd7_scyne-logo.svg"
+            alt="Scyne Logo"
+            sx={{
+              height: 48,
+              width: "auto",
+              filter: "brightness(0) invert(1)",
+            }}
+          />
+          <Typography
+            variant="caption"
+            sx={{
+              position: "absolute",
+              right: -28,
+              bottom: -4,
+              color: "rgba(255,255,255,0.72)",
+              fontSize: "0.58rem",
+              lineHeight: 1,
+            }}
+          >
+            v{packageJson.version}
+          </Typography>
+        </Box>
 
         <Typography sx={{ color: "rgba(255,255,255,0.72)", mb: 4 }}>
           Choose how you would like to place your order.
