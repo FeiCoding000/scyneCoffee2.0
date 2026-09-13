@@ -109,6 +109,20 @@ export default function NavBar() {
         >
           Statistic
         </Button>
+        <Button
+          size="small"
+          onClick={() => navigate("/guess")}
+          sx={{
+            color: "white",
+            textTransform: "none",
+            fontWeight: "normal",
+            minWidth: "auto",
+            px: 1,
+            "&:hover": { backgroundColor: "rgba(255,255,255,0.12)" },
+          }}
+        >
+          Guess
+        </Button>
         <Cart />
         {/* <Button
           sx={{

@@ -16,6 +16,7 @@ import "./index.css";
 import ProfilePage from "./pages/ProfilePage";
 import CreateProfilePage from "./pages/CreateProfilePage";
 import ProfileOrderPage from "./pages/ProfileOrderPage";
+import GuessPage from "./pages/GuessPage";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/statistic" element={<StatisticPage />} />
           <Route path="/bugreport" element={<BugReportPage />} />
           <Route path="/news" element={<News />} />
+          <Route path="/guess" element={<GuessPage />} />
         </Route>
 
         <Route path="/" element={<HomePage />} />
