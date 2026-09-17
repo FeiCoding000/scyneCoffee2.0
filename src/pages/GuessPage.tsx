@@ -29,6 +29,7 @@ import {
   getNextSydneyDateKey,
   getSydneyDateKey,
   getSydneyWeekKey,
+  isAfterSydneyJoinCutoff,
   isAfterSydneySettlement,
 } from "../utils/guessDate";
 
@@ -37,11 +38,15 @@ const medalColors = ["#FFD700", "#C0C0C0", "#CD7F32"];
 const sortLeaderboard = (leaderboard: GuessLeaderboard | null): LeaderboardPlayer[] =>
   Object.values(leaderboard?.players ?? {}).sort((a, b) => b.wins - a.wins || a.name.localeCompare(b.name));
 
-const getStatusLabel = (guess: GuessDay | null, isPastSettlement: boolean) => {
+const getStatusLabel = (guess: GuessDay | null, isPastSettlement: boolean, isPastJoinCutoff: boolean) => {
   if (!guess) return "Not started";
   if (guess.status === "settled") return "Settled";
-  return isPastSettlement ? "Ready to settle" : "Open";
+  if (isPastSettlement) return "Ready to settle";
+  return isPastJoinCutoff ? "Join closed" : "Open";
 };
+
+const getEntryGuessDisplay = (guessValue: number, shouldHide: boolean) =>
+  shouldHide ? String(guessValue).replace(/\d/g, "●") : guessValue;
 
 export default function GuessPage() {
   const todayDateKey = useMemo(() => getSydneyDateKey(), []);
@@ -59,6 +64,9 @@ export default function GuessPage() {
   const [error, setError] = useState<string | null>(null);
 
   const isPastSettlement = isAfterSydneySettlement(dateKey, now);
+  const isPastJoinCutoff = isAfterSydneyJoinCutoff(dateKey, now);
+  const canJoinGuess = Boolean(guess && guess.status === "open" && !isPastJoinCutoff);
+  const shouldHideEntryGuesses = !isPastJoinCutoff && guess?.status !== "settled";
   const leaderboardPlayers = sortLeaderboard(leaderboard);
 
   const loadData = useCallback(async () => {
@@ -131,6 +139,11 @@ export default function GuessPage() {
   }, [dateKey, guess, isPastSettlement, settling, weekKey]);
 
   const handleStartGuess = async () => {
+    if (isAfterSydneyJoinCutoff(dateKey)) {
+      setError("Guess rounds cannot be started after 10:00 AM Sydney time.");
+      return;
+    }
+
     try {
       setSubmitting(true);
       setError(null);
@@ -155,6 +168,11 @@ export default function GuessPage() {
 
     if (!Number.isInteger(parsedGuess) || parsedGuess < 0) {
       setError("Please enter a valid whole number.");
+      return;
+    }
+
+    if (isAfterSydneyJoinCutoff(dateKey)) {
+      setError("Guess submissions close at 10:00 AM Sydney time. You can no longer join this round.");
       return;
     }
 
@@ -186,21 +204,35 @@ export default function GuessPage() {
     <Box
       sx={{
         width: "100%",
+        minHeight: "calc(100vh - 96px)",
         display: "grid",
-        gridTemplateColumns: { xs: "1fr", lg: "minmax(0, 1fr) 360px" },
-        gap: 3,
-        pb: 5,
+        gridTemplateColumns: { xs: "1fr", lg: "minmax(0, 1fr) 300px" },
+        "@media (min-width: 768px)": {
+          gridTemplateColumns: "minmax(0, 1fr) 260px",
+        },
+        "@media (min-width: 1200px)": {
+          gridTemplateColumns: "minmax(0, 1fr) 300px",
+        },
+        gap: { xs: 3, md: 0 },
+        color: "white",
+        p: { xs: 3, sm: 4 },
+        borderRadius: "24px",
+        background: "rgba(255, 255, 255, 0.08)",
+        border: "1px solid rgba(255, 255, 255, 0.18)",
+        boxShadow: "0 20px 60px rgba(0, 0, 0, 0.22)",
+        backdropFilter: "blur(10px)",
+        mb: 5,
       }}
     >
       <Box
         sx={{
-          color: "white",
-          p: { xs: 3, sm: 4 },
-          borderRadius: "24px",
-          background: "rgba(255, 255, 255, 0.08)",
-          border: "1px solid rgba(255, 255, 255, 0.18)",
-          boxShadow: "0 20px 60px rgba(0, 0, 0, 0.22)",
-          backdropFilter: "blur(10px)",
+          minWidth: 0,
+          "@media (min-width: 768px)": {
+            pr: 3,
+          },
+          "@media (min-width: 1200px)": {
+            pr: 4,
+          },
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, flexWrap: "wrap", mb: 4 }}>
@@ -214,7 +246,7 @@ export default function GuessPage() {
             </Typography>
           </Box>
           <Chip
-            label={getStatusLabel(guess, isPastSettlement)}
+            label={getStatusLabel(guess, isPastSettlement, isPastJoinCutoff)}
             sx={{
               height: 34,
               color: "#2E244D",
@@ -234,13 +266,18 @@ export default function GuessPage() {
               <Box>
                 <Typography variant="h6">No guess has been started for this round.</Typography>
                 <Typography sx={{ color: "rgba(46, 36, 77, 0.68)" }}>
-                  Open this guessing round, then everyone can join before settlement.
+                  Open this guessing round, then everyone can join before 10:00 AM Sydney time.
                 </Typography>
+                {isPastJoinCutoff && (
+                  <Typography sx={{ color: "rgba(46, 36, 77, 0.68)", mt: 0.75 }}>
+                    It is after 10:00 AM, so joining is closed for this round.
+                  </Typography>
+                )}
               </Box>
               <Button
                 variant="contained"
                 startIcon={<PlayArrowIcon />}
-                disabled={submitting || isPastSettlement}
+                disabled={submitting || isPastJoinCutoff}
                 onClick={handleStartGuess}
                 sx={{ borderRadius: "12px", backgroundColor: "#F2C078", color: "#2E244D", "&:hover": { backgroundColor: "#FFD49A" } }}
               >
@@ -260,15 +297,15 @@ export default function GuessPage() {
                     <Box>
                       <Typography variant="h6">Join the guess</Typography>
                       <Typography variant="body2" sx={{ color: "rgba(46,36,77,0.68)" }}>
-                        Enter your name and the coffee count you think we will hit by 12:30.
+                        Enter your name and the coffee count you think we will hit by 12:30. Entries close at 10:00 AM Sydney time.
                       </Typography>
                     </Box>
                   </Box>
                   {settling && <CircularProgress size={24} sx={{ color: "#F2C078" }} />}
                 </Box>
 
-                {guess.status === "open" && !isPastSettlement ? (
-                  <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 160px auto" }, gap: 2 }}>
+                {canJoinGuess ? (
+                  <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr auto" }, gap: 2 }}>
                     <TextField label="Name" value={name} onChange={(event) => setName(event.target.value)} size="small" />
                     <TextField
                       label="Guess"
@@ -290,7 +327,7 @@ export default function GuessPage() {
                   </Box>
                 ) : (
                   <Typography sx={{ color: "rgba(46,36,77,0.72)" }}>
-                    Guess submissions are closed for this round.
+                    Guess submissions are closed after 10:00 AM Sydney time. You can no longer join this round.
                   </Typography>
                 )}
               </CardContent>
@@ -329,9 +366,9 @@ export default function GuessPage() {
                 {guess.entries.length ? (
                   guess.entries.map((entry) => (
                     <Card key={entry.id} sx={{ borderRadius: "16px", background: "rgba(255,255,255,0.92)", color: "#2E244D" }}>
-                      <CardContent sx={{ py: 1.5, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <Typography sx={{ fontWeight: 600 }}>{entry.name}</Typography>
-                        <Typography>{entry.guess}</Typography>
+                      <CardContent sx={{ py: 1.5, display: "flex", alignItems: "center", justifyContent: "space-between", "&:last-child": { pb: 1.5 } }}>
+                        <Typography sx={{ fontWeight: 600, lineHeight: 1 }}>{entry.name}</Typography>
+                        <Typography sx={{ lineHeight: 1 }}>{getEntryGuessDisplay(entry.guess, shouldHideEntryGuesses)}</Typography>
                       </CardContent>
                     </Card>
                   ))
@@ -347,15 +384,16 @@ export default function GuessPage() {
       <Box
         sx={{
           color: "white",
-          p: 3,
-          borderRadius: "24px",
-          background: "rgba(255, 255, 255, 0.08)",
-          border: "1px solid rgba(255, 255, 255, 0.18)",
-          boxShadow: "0 20px 60px rgba(0, 0, 0, 0.22)",
-          backdropFilter: "blur(10px)",
-          height: "fit-content",
-          position: { lg: "sticky" },
-          top: { lg: 96 },
+          alignSelf: "stretch",
+          pt: { xs: 3, md: 0 },
+          borderTop: { xs: "1px solid rgba(255, 255, 255, 0.16)", md: "none" },
+          "@media (min-width: 768px)": {
+            pl: 3,
+            borderLeft: "1px solid rgba(255, 255, 255, 0.16)",
+          },
+          "@media (min-width: 1200px)": {
+            pl: 4,
+          },
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
@@ -374,7 +412,7 @@ export default function GuessPage() {
           {leaderboardPlayers.length ? (
             leaderboardPlayers.slice(0, 5).map((player, index) => (
               <Card key={player.name} sx={{ borderRadius: "16px", background: "rgba(255,255,255,0.92)", color: "#2E244D" }}>
-                <CardContent sx={{ py: 1.5, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
+                <CardContent sx={{ py: 1.5, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2, "&:last-child": { pb: 1.5 } }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                     <Avatar
                       sx={{
