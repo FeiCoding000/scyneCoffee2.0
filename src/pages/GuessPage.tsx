@@ -410,34 +410,52 @@ export default function GuessPage() {
           </Box>
         </Box>
 
-        <Stack spacing={1.5}>
+        <Stack
+          spacing={0}
+          sx={{
+            borderTop: "1px solid rgba(255,255,255,0.14)",
+            borderBottom: leaderboardPlayers.length ? "1px solid rgba(255,255,255,0.14)" : "none",
+          }}
+        >
           {leaderboardPlayers.length ? (
             leaderboardPlayers.slice(0, 5).map((player, index) => (
-              <Card key={player.name} sx={{ borderRadius: "16px", background: "rgba(255,255,255,0.92)", color: "#2E244D" }}>
-                <CardContent sx={{ py: 1.5, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2, "&:last-child": { pb: 1.5 } }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                    <Avatar
-                      sx={{
-                        width: 34,
-                        height: 34,
-                        bgcolor: index < 3 ? medalColors[index] : "#2E244D",
-                        color: index < 3 ? "#2E244D" : "white",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {index < 3 ? <EmojiEventsIcon fontSize="small" /> : index + 1}
-                    </Avatar>
-                    <Typography sx={{ fontWeight: 700 }}>{player.name}</Typography>
-                  </Box>
-                  <Typography sx={{ whiteSpace: "nowrap", color: "rgba(46,36,77,0.72)" }}>
-                    {player.wins} win{player.wins === 1 ? "" : "s"}
+              <Box
+                key={player.name}
+                sx={{
+                  py: 1.5,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 2,
+                  borderBottom: index < Math.min(leaderboardPlayers.length, 5) - 1
+                    ? "1px solid rgba(255,255,255,0.12)"
+                    : "none",
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, minWidth: 0 }}>
+                  <Avatar
+                    sx={{
+                      width: 34,
+                      height: 34,
+                      bgcolor: index < 3 ? medalColors[index] : "rgba(255,255,255,0.16)",
+                      color: index < 3 ? "#2E244D" : "white",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {index < 3 ? <EmojiEventsIcon fontSize="small" /> : index + 1}
+                  </Avatar>
+                  <Typography sx={{ fontWeight: 700, lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {player.name}
                   </Typography>
-                </CardContent>
-              </Card>
+                </Box>
+                <Typography sx={{ whiteSpace: "nowrap", color: "rgba(255,255,255,0.72)", lineHeight: 1 }}>
+                  {player.wins} win{player.wins === 1 ? "" : "s"}
+                </Typography>
+              </Box>
             ))
           ) : (
-            <Typography sx={{ color: "rgba(255,255,255,0.72)" }}>
-              No winners this week yet.
+            <Typography sx={{ color: "rgba(255,255,255,0.72)", py: 1.5 }}>
+              No players this week yet.
             </Typography>
           )}
         </Stack>
