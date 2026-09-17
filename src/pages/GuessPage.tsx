@@ -385,10 +385,12 @@ export default function GuessPage() {
         sx={{
           color: "white",
           alignSelf: "stretch",
-          pt: { xs: 3, md: 0 },
-          borderTop: { xs: "1px solid rgba(255, 255, 255, 0.16)", md: "none" },
+          pt: 3,
+          borderTop: "1px solid rgba(255, 255, 255, 0.16)",
           "@media (min-width: 768px)": {
+            pt: 0,
             pl: 3,
+            borderTop: "none",
             borderLeft: "1px solid rgba(255, 255, 255, 0.16)",
           },
           "@media (min-width: 1200px)": {
