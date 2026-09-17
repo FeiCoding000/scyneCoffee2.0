@@ -130,8 +130,11 @@ export const settleTodayGuess = async (dateKey = getSydneyDateKey()) => {
       winners,
     };
 
+    const participantNames = Array.from(
+      new Set((guess.entries ?? []).map((entry) => entry.name.trim()).filter(Boolean))
+    );
     const leaderboardRef = getLeaderboardRef(guess.weekKey);
-    const leaderboardSnapshot = winners.length > 0
+    const leaderboardSnapshot = participantNames.length > 0
       ? await transaction.get(leaderboardRef)
       : null;
 
@@ -142,12 +145,19 @@ export const settleTodayGuess = async (dateKey = getSydneyDateKey()) => {
       winners,
     });
 
-    if (winners.length > 0 && leaderboardSnapshot) {
+    if (participantNames.length > 0 && leaderboardSnapshot) {
       const leaderboard = leaderboardSnapshot.exists()
         ? (leaderboardSnapshot.data() as GuessLeaderboard)
         : ({ weekKey: guess.weekKey, players: {} } satisfies GuessLeaderboard);
 
       const players = { ...leaderboard.players };
+      participantNames.forEach((name) => {
+        players[name] = {
+          name,
+          wins: players[name]?.wins ?? 0,
+        };
+      });
+
       winners.forEach((winner) => {
         const currentWins = players[winner.name]?.wins ?? 0;
         players[winner.name] = {
