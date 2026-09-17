@@ -50,6 +50,9 @@ export const getSydneyBoundaryDate = (dateKey: string, hour: number, minute = 0)
   return new Date(Date.UTC(year, month - 1, day, hour, minute) - offsetMinutes * 60_000);
 };
 
+export const getSydneyJoinCutoffDate = (dateKey: string) =>
+  getSydneyBoundaryDate(dateKey, 10);
+
 export const getSydneySettlementDate = (dateKey: string) =>
   getSydneyBoundaryDate(dateKey, 12, 30);
 
@@ -78,6 +81,9 @@ export const getSydneyWeekKey = (dateKey = getSydneyDateKey()) => {
 
   return `${weekStart.getUTCFullYear()}-W${String(weekNumber).padStart(2, "0")}`;
 };
+
+export const isAfterSydneyJoinCutoff = (dateKey: string, now = new Date()) =>
+  now.getTime() >= getSydneyJoinCutoffDate(dateKey).getTime();
 
 export const isAfterSydneySettlement = (dateKey: string, now = new Date()) =>
   now.getTime() >= getSydneySettlementDate(dateKey).getTime();
