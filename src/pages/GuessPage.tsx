@@ -6,15 +6,19 @@ import {
   CardContent,
   Chip,
   CircularProgress,
+  ClickAwayListener,
   Divider,
+  IconButton,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CoffeeIcon from "@mui/icons-material/Coffee";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { GuessDay, GuessLeaderboard, LeaderboardPlayer } from "../types/guess";
 import {
@@ -87,6 +91,7 @@ export default function GuessPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [settling, setSettling] = useState(false);
+  const [isScoreInfoOpen, setIsScoreInfoOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const isPastSettlement = isAfterSydneySettlement(dateKey, now);
@@ -430,8 +435,61 @@ export default function GuessPage() {
           </Avatar>
           <Box>
             <Typography variant="h6">Leaderboard</Typography>
-            <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.72)" }}>
-              This week · {weekKey} · 100 - avg diff - missed days
+            <Typography
+              variant="body2"
+              sx={{ color: "rgba(255,255,255,0.72)", display: "flex", alignItems: "center", gap: 0.5 }}
+            >
+              This week · {weekKey}
+              <ClickAwayListener onClickAway={() => setIsScoreInfoOpen(false)}>
+                <Tooltip
+                  arrow
+                  open={isScoreInfoOpen}
+                  onOpen={() => setIsScoreInfoOpen(true)}
+                  onClose={() => setIsScoreInfoOpen(false)}
+                  enterTouchDelay={0}
+                  leaveTouchDelay={5000}
+                  title="Score = 100 - average difference - missed settled rounds. Missed future weekdays are not counted."
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        bgcolor: "white",
+                        color: "#2E244D",
+                        fontSize: "0.78rem",
+                        boxShadow: "0 10px 28px rgba(0, 0, 0, 0.24)",
+                      },
+                    },
+                    arrow: {
+                      sx: {
+                        color: "white",
+                      },
+                    },
+                  }}
+                >
+                  <IconButton
+                    aria-label="How leaderboard score is calculated"
+                    size="small"
+                    onClick={() => setIsScoreInfoOpen((isOpen) => !isOpen)}
+                    sx={{
+                      width: 32,
+                      height: 32,
+                      ml: 0.25,
+                      color: "rgba(255,255,255,0.72)",
+                      "&:hover": {
+                        color: "#F2C078",
+                        backgroundColor: "rgba(242, 192, 120, 0.12)",
+                      },
+                    }}
+                  >
+                    <InfoOutlinedIcon
+                      sx={{
+                        fontSize: 18,
+                        transition: "transform 160ms ease",
+                        transform: isScoreInfoOpen ? "scale(1.12)" : "scale(1)",
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </ClickAwayListener>
             </Typography>
           </Box>
         </Box>
