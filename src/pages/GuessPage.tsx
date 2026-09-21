@@ -44,15 +44,21 @@ const getPlayerAverageDiff = (player: LeaderboardPlayer) => {
   const rounds = getPlayerRounds(player);
   return rounds > 0 ? getPlayerTotalDiff(player) / rounds : Number.MAX_SAFE_INTEGER;
 };
-const getPlayerAbsencePenalty = (player: LeaderboardPlayer) =>
-  Math.max(0, weeklyRoundCount - getPlayerRounds(player)) * absencePenaltyPerRound;
-const getPlayerScore = (player: LeaderboardPlayer) =>
-  Math.max(0, 100 - getPlayerAverageDiff(player) - getPlayerAbsencePenalty(player));
+const getSettledRoundCount = (leaderboard: GuessLeaderboard | null) =>
+  leaderboard?.settledRounds
+  ?? Math.min(
+    weeklyRoundCount,
+    Math.max(0, ...Object.values(leaderboard?.players ?? {}).map(getPlayerRounds))
+  );
+const getPlayerAbsencePenalty = (player: LeaderboardPlayer, leaderboard: GuessLeaderboard | null) =>
+  Math.max(0, getSettledRoundCount(leaderboard) - getPlayerRounds(player)) * absencePenaltyPerRound;
+const getPlayerScore = (player: LeaderboardPlayer, leaderboard: GuessLeaderboard | null) =>
+  Math.max(0, 100 - getPlayerAverageDiff(player) - getPlayerAbsencePenalty(player, leaderboard));
 
 const sortLeaderboard = (leaderboard: GuessLeaderboard | null): LeaderboardPlayer[] =>
   Object.values(leaderboard?.players ?? {}).sort(
     (a, b) =>
-      getPlayerScore(b) - getPlayerScore(a) ||
+      getPlayerScore(b, leaderboard) - getPlayerScore(a, leaderboard) ||
       (b.wins ?? 0) - (a.wins ?? 0) ||
       getPlayerRounds(b) - getPlayerRounds(a) ||
       a.name.localeCompare(b.name)
@@ -469,7 +475,7 @@ export default function GuessPage() {
                   </Typography>
                 </Box>
                 <Typography sx={{ whiteSpace: "nowrap", color: "rgba(255,255,255,0.72)", lineHeight: 1 }}>
-                  {getPlayerScore(player).toFixed(1)} pts · {getPlayerRounds(player)} round{getPlayerRounds(player) === 1 ? "" : "s"}
+                  {getPlayerScore(player, leaderboard).toFixed(1)} pts · {getPlayerRounds(player)} round{getPlayerRounds(player) === 1 ? "" : "s"}
                 </Typography>
               </Box>
             ))
