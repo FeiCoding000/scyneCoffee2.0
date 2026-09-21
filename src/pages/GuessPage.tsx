@@ -35,8 +35,28 @@ import {
 
 const medalColors = ["#FFD700", "#C0C0C0", "#CD7F32"];
 
+const getPlayerTotalDiff = (player: LeaderboardPlayer) => player.points ?? 0;
+const getPlayerRounds = (player: LeaderboardPlayer) => player.rounds ?? 0;
+const weeklyRoundCount = 5;
+const absencePenaltyPerRound = 1;
+
+const getPlayerAverageDiff = (player: LeaderboardPlayer) => {
+  const rounds = getPlayerRounds(player);
+  return rounds > 0 ? getPlayerTotalDiff(player) / rounds : Number.MAX_SAFE_INTEGER;
+};
+const getPlayerAbsencePenalty = (player: LeaderboardPlayer) =>
+  Math.max(0, weeklyRoundCount - getPlayerRounds(player)) * absencePenaltyPerRound;
+const getPlayerScore = (player: LeaderboardPlayer) =>
+  Math.max(0, 100 - getPlayerAverageDiff(player) - getPlayerAbsencePenalty(player));
+
 const sortLeaderboard = (leaderboard: GuessLeaderboard | null): LeaderboardPlayer[] =>
-  Object.values(leaderboard?.players ?? {}).sort((a, b) => b.wins - a.wins || a.name.localeCompare(b.name));
+  Object.values(leaderboard?.players ?? {}).sort(
+    (a, b) =>
+      getPlayerScore(b) - getPlayerScore(a) ||
+      (b.wins ?? 0) - (a.wins ?? 0) ||
+      getPlayerRounds(b) - getPlayerRounds(a) ||
+      a.name.localeCompare(b.name)
+  );
 
 const getStatusLabel = (guess: GuessDay | null, isPastSettlement: boolean, isPastJoinCutoff: boolean) => {
   if (!guess) return "Not started";
@@ -405,7 +425,7 @@ export default function GuessPage() {
           <Box>
             <Typography variant="h6">Leaderboard</Typography>
             <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.72)" }}>
-              This week · {weekKey}
+              This week · {weekKey} · 100 - avg diff - missed days
             </Typography>
           </Box>
         </Box>
@@ -449,7 +469,7 @@ export default function GuessPage() {
                   </Typography>
                 </Box>
                 <Typography sx={{ whiteSpace: "nowrap", color: "rgba(255,255,255,0.72)", lineHeight: 1 }}>
-                  {player.wins} win{player.wins === 1 ? "" : "s"}
+                  {getPlayerScore(player).toFixed(1)} pts · {getPlayerRounds(player)} round{getPlayerRounds(player) === 1 ? "" : "s"}
                 </Typography>
               </Box>
             ))

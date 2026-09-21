@@ -130,9 +130,15 @@ export const settleTodayGuess = async (dateKey = getSydneyDateKey()) => {
       winners,
     };
 
-    const participantNames = Array.from(
-      new Set((guess.entries ?? []).map((entry) => entry.name.trim()).filter(Boolean))
-    );
+    const playerRoundScores = (guess.entries ?? []).reduce<Record<string, number>>((scores, entry) => {
+      const name = entry.name.trim();
+      if (!name) return scores;
+
+      const diff = Math.abs(entry.guess - actualCount);
+      scores[name] = Math.min(scores[name] ?? diff, diff);
+      return scores;
+    }, {});
+    const participantNames = Object.keys(playerRoundScores);
     const leaderboardRef = getLeaderboardRef(guess.weekKey);
     const leaderboardSnapshot = participantNames.length > 0
       ? await transaction.get(leaderboardRef)
@@ -152,17 +158,22 @@ export const settleTodayGuess = async (dateKey = getSydneyDateKey()) => {
 
       const players = { ...leaderboard.players };
       participantNames.forEach((name) => {
+        const currentPlayer = players[name];
         players[name] = {
           name,
-          wins: players[name]?.wins ?? 0,
+          points: (currentPlayer?.points ?? 0) + playerRoundScores[name],
+          rounds: (currentPlayer?.rounds ?? 0) + 1,
+          wins: currentPlayer?.wins ?? 0,
         };
       });
 
       winners.forEach((winner) => {
-        const currentWins = players[winner.name]?.wins ?? 0;
+        const currentPlayer = players[winner.name];
+        if (!currentPlayer) return;
+
         players[winner.name] = {
-          name: winner.name,
-          wins: currentWins + 1,
+          ...currentPlayer,
+          wins: (currentPlayer.wins ?? 0) + 1,
         };
       });
 

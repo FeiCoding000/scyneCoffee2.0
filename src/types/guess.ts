@@ -28,7 +28,12 @@ export type GuessDay = {
 
 export type LeaderboardPlayer = {
   name: string;
-  wins: number;
+  /** Total absolute difference for the week. Final score is 100 - points / rounds - missed round penalty. */
+  points: number;
+  /** Number of settled rounds played this week. */
+  rounds: number;
+  /** Kept for backwards compatibility / tie-breaks. */
+  wins?: number;
 };
 
 export type GuessLeaderboard = {
