@@ -28,7 +28,7 @@ export type GuessDay = {
 
 export type LeaderboardPlayer = {
   name: string;
-  /** Total absolute difference for the week. Final score is 100 - points / rounds - missed round penalty. */
+  /** Total absolute difference for the week. Final score is 100 - points / rounds - missed settled round penalty. */
   points: number;
   /** Number of settled rounds played this week. */
   rounds: number;
@@ -38,6 +38,8 @@ export type LeaderboardPlayer = {
 
 export type GuessLeaderboard = {
   weekKey: string;
+  /** Number of settled guess days this week; used to penalize only rounds already missed, not future weekdays. */
+  settledRounds?: number;
   players: Record<string, LeaderboardPlayer>;
   updatedAt?: Timestamp;
 };

@@ -10,6 +10,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import RecentOrders from "../components/RecentOrders";
 import packageJson from "../../package.json";
 
@@ -19,6 +20,7 @@ export default function HomePage() {
   const [isQuickMenuOpen, setIsQuickMenuOpen] = useState(false);
 
   const quickLinks = [
+    { label: "Coffee Guess", path: "/guess", icon: <HelpOutlineIcon sx={{ fontSize: 18 }} /> },
     { label: "Statistics", path: "/statistic", icon: <BarChartIcon sx={{ fontSize: 18 }} /> },
     { label: "Orders", path: "/orders", icon: <ListAltIcon sx={{ fontSize: 18 }} /> },
     { label: "Create Profile", path: "/create-profile", icon: <PersonAddIcon sx={{ fontSize: 18 }} /> },
@@ -196,9 +198,10 @@ export default function HomePage() {
         >
           {quickLinks.map((link, index) => {
             const positions = [
-              { right: 0, bottom: 70 },
-              { right: 52, bottom: 52 },
-              { right: 70, bottom: 0 },
+              { right: 0, bottom: 86 },
+              { right: 43, bottom: 74 },
+              { right: 74, bottom: 43 },
+              { right: 86, bottom: 0 },
             ];
 
             return (

@@ -140,9 +140,7 @@ export const settleTodayGuess = async (dateKey = getSydneyDateKey()) => {
     }, {});
     const participantNames = Object.keys(playerRoundScores);
     const leaderboardRef = getLeaderboardRef(guess.weekKey);
-    const leaderboardSnapshot = participantNames.length > 0
-      ? await transaction.get(leaderboardRef)
-      : null;
+    const leaderboardSnapshot = await transaction.get(leaderboardRef);
 
     transaction.update(guessRef, {
       status: "settled",
@@ -151,42 +149,44 @@ export const settleTodayGuess = async (dateKey = getSydneyDateKey()) => {
       winners,
     });
 
-    if (participantNames.length > 0 && leaderboardSnapshot) {
-      const leaderboard = leaderboardSnapshot.exists()
-        ? (leaderboardSnapshot.data() as GuessLeaderboard)
-        : ({ weekKey: guess.weekKey, players: {} } satisfies GuessLeaderboard);
+    const leaderboard = leaderboardSnapshot.exists()
+      ? (leaderboardSnapshot.data() as GuessLeaderboard)
+      : ({ weekKey: guess.weekKey, players: {} } satisfies GuessLeaderboard);
 
-      const players = { ...leaderboard.players };
-      participantNames.forEach((name) => {
-        const currentPlayer = players[name];
-        players[name] = {
-          name,
-          points: (currentPlayer?.points ?? 0) + playerRoundScores[name],
-          rounds: (currentPlayer?.rounds ?? 0) + 1,
-          wins: currentPlayer?.wins ?? 0,
-        };
-      });
+    const players = { ...leaderboard.players };
+    participantNames.forEach((name) => {
+      const currentPlayer = players[name];
+      players[name] = {
+        name,
+        points: (currentPlayer?.points ?? 0) + playerRoundScores[name],
+        rounds: (currentPlayer?.rounds ?? 0) + 1,
+        wins: currentPlayer?.wins ?? 0,
+      };
+    });
 
-      winners.forEach((winner) => {
-        const currentPlayer = players[winner.name];
-        if (!currentPlayer) return;
+    winners.forEach((winner) => {
+      const currentPlayer = players[winner.name];
+      if (!currentPlayer) return;
 
-        players[winner.name] = {
-          ...currentPlayer,
-          wins: (currentPlayer.wins ?? 0) + 1,
-        };
-      });
+      players[winner.name] = {
+        ...currentPlayer,
+        wins: (currentPlayer.wins ?? 0) + 1,
+      };
+    });
 
-      transaction.set(
-        leaderboardRef,
-        {
-          weekKey: guess.weekKey,
-          players,
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true }
-      );
-    }
+    const previousSettledRounds = leaderboard.settledRounds
+      ?? Math.max(0, ...Object.values(leaderboard.players ?? {}).map((player) => player.rounds ?? 0));
+
+    transaction.set(
+      leaderboardRef,
+      {
+        weekKey: guess.weekKey,
+        settledRounds: previousSettledRounds + 1,
+        players,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
 
     return settledGuess;
   });
