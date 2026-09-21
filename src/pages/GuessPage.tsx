@@ -533,7 +533,7 @@ export default function GuessPage() {
                   </Typography>
                 </Box>
                 <Typography sx={{ whiteSpace: "nowrap", color: "rgba(255,255,255,0.72)", lineHeight: 1 }}>
-                  {getPlayerScore(player, leaderboard).toFixed(1)} pts · {getPlayerRounds(player)} round{getPlayerRounds(player) === 1 ? "" : "s"}
+                  {getPlayerScore(player, leaderboard).toFixed(1)} pts
                 </Typography>
               </Box>
             ))
